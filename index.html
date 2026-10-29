@@ -7,96 +7,266 @@
 <meta name="theme-color" content="#10130f">
 <title>AtlasIKA — Music Without Borders</title>
 <style>
-:root{color-scheme:dark;--bg:#10130f;--panel:#191e18;--muted:#a8b0a4;--gold:#e5bd70;--line:#30372e}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#f6f5ee;font-family:Arial,sans-serif}
-header{padding:22px 6%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
-.logo{font-size:25px;font-weight:800;letter-spacing:1px}.logo span{color:var(--gold)}
-header small{color:var(--muted)}
-main{max-width:1200px;margin:auto;padding:38px 6% 150px}
-.hero{padding:42px 0 34px}
-.eyebrow{color:var(--gold);text-transform:uppercase;letter-spacing:3px;font-size:12px}
-h1{font-size:clamp(38px,7vw,76px);line-height:1.02;margin:18px 0}
-.hero p{color:var(--muted);font-size:17px;line-height:1.6;max-width:570px}
-.search{width:100%;max-width:520px;padding:15px;border:1px solid var(--line);background:var(--panel);border-radius:10px;color:white;font-size:16px}
-h2{font-size:24px;margin:36px 0 18px}
-.filters{display:flex;gap:9px;flex-wrap:wrap}
-.filter{background:var(--panel);border:1px solid var(--line);color:white;padding:10px 15px;border-radius:30px;cursor:pointer}
-.filter.active,.filter:hover{background:var(--gold);color:#171710}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;overflow:hidden}
-.art{aspect-ratio:1;display:grid;place-items:center;font-size:65px;background:linear-gradient(145deg,#344b36,#b18b53)}
-.card:nth-child(2) .art{background:linear-gradient(145deg,#673b30,#d3a65d)}
-.card:nth-child(3) .art{background:linear-gradient(145deg,#263f55,#8da9a0)}
-.card:nth-child(4) .art{background:linear-gradient(145deg,#513e65,#c58c72)}
-.info{padding:15px}.info h3{margin:0 0 8px;font-size:17px}.info p{margin:0;color:var(--muted);font-size:13px}
-.play{margin-top:15px;width:100%;padding:11px;border:0;border-radius:7px;background:var(--gold);color:#171710;font-weight:bold;cursor:pointer}
-.note{color:var(--muted);font-size:13px;line-height:1.6;margin-top:25px}
-footer{border-top:1px solid var(--line);padding:24px 6%;color:var(--muted);font-size:13px}
-.player{position:fixed;bottom:0;left:0;right:0;background:#20251e;border-top:1px solid var(--line);padding:15px 6%;display:flex;align-items:center;gap:15px}
-.player-info{flex:1;min-width:0}.player-info strong{display:block}.player-info small{color:var(--muted)}
-#status{color:var(--gold);font-size:13px}
-@media(max-width:520px){header{padding:18px 5%}main{padding:25px 5% 140px}.hero{padding-top:28px}.player{padding:13px 5%}}
+:root {
+  --bg:#10130f;
+  --panel:#191e18;
+  --muted:#a8b0a4;
+  --gold:#e5bd70;
+  --line:#30372e;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:#f6f5ee;
+  font-family:Arial,sans-serif;
+}
+header {
+  padding:22px 6%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--line);
+}
+.logo { font-size:25px; font-weight:800; letter-spacing:1px; }
+.logo span { color:var(--gold); }
+header small { color:var(--muted); }
+main { max-width:1200px; margin:auto; padding:38px 6% 180px; }
+.eyebrow {
+  color:var(--gold);
+  text-transform:uppercase;
+  letter-spacing:3px;
+  font-size:12px;
+}
+h1 { font-size:clamp(32px,5vw,52px); margin:12px 0; }
+.hero p { color:var(--muted); line-height:1.6; max-width:600px; }
+.search {
+  width:100%;
+  max-width:520px;
+  padding:15px;
+  margin:20px 0;
+  border:1px solid var(--line);
+  background:var(--panel);
+  border-radius:10px;
+  color:white;
+  font-size:16px;
+}
+.filters { display:flex; flex-wrap:wrap; gap:10px; margin:10px 0 32px; }
+button {
+  cursor:pointer;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:#f6f5ee;
+  padding:11px 16px;
+  border-radius:8px;
+  font-size:14px;
+}
+button:hover, button.active {
+  border-color:var(--gold);
+  color:var(--gold);
+}
+h2 { font-size:22px; margin-bottom:18px; }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+}
+.card {
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:22px;
+  transition:border-color .2s;
+}
+.card:hover { border-color:var(--gold); }
+.cover {
+  min-height:130px;
+  border-radius:10px;
+  background:linear-gradient(135deg,#29372a,#141a14);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:52px;
+  margin-bottom:18px;
+}
+.card h3 { margin:0 0 8px; }
+.card p { color:var(--muted); font-size:14px; }
+.card button { width:100%; margin-top:10px; }
+.note { color:var(--muted); font-size:13px; line-height:1.5; margin-top:24px; }
+footer {
+  border-top:1px solid var(--line);
+  padding:25px 6%;
+  color:var(--muted);
+  font-size:13px;
+}
+.player {
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:#171c16;
+  border-top:1px solid var(--gold);
+  padding:14px 5%;
+  z-index:10;
+  box-shadow:0 -8px 30px #0006;
+}
+.player-top {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:12px;
+}
+#now { font-weight:bold; }
+#sub { display:block; color:var(--muted); font-size:13px; margin-top:5px; }
+#status { color:var(--gold); font-size:12px; }
+#suno-frame { width:100%; height:120px; border:0; border-radius:10px; background:#191e18; }
+.hidden { display:none; }
+@media(max-width:600px) {
+  header { padding:18px 5%; }
+  header small { display:none; }
+  main { padding:28px 5% 190px; }
+  .player { padding:12px 4%; }
+  #suno-frame { height:120px; }
+}
 </style>
 </head>
 <body>
+
 <header>
   <div class="logo">Atlas<span>IKA</span></div>
-  <small>MUSIC WITHOUT BORDERS</small>
+  <small>Music without borders</small>
 </header>
+
 <main>
   <section class="hero">
-    <div class="eyebrow">One world · Thousands of sounds</div>
-    <h1>Discover the<br>sound of the world.</h1>
-    <p>Travel through countries, cultures and musical traditions. Your journey into world music starts here.</p>
-    <input class="search" id="search" type="search" placeholder="Search music, country or genre..." aria-label="Search music">
+    <div class="eyebrow">One world · A thousand sounds</div>
+    <h1>Discover music without borders.</h1>
+    <p>Explore the sounds, rhythms and musical traditions of countries around the world.</p>
+    <input class="search" id="search" type="search"
+      placeholder="Search songs, countries or genres...">
   </section>
-  <h2>Explore by musical tradition</h2>
+
   <div class="filters" id="filters">
-    <button class="filter active" data-genre="All">All music</button>
-    <button class="filter" data-genre="Folk">Folk</button>
-    <button class="filter" data-genre="Flamenco">Flamenco</button>
-    <button class="filter" data-genre="Anatolian Rock">Anatolian Rock</button>
-    <button class="filter" data-genre="Latin">Latin</button>
+    <button class="active" data-genre="All">All music</button>
+    <button data-genre="Folk">Folk</button>
+    <button data-genre="Flamenco">Flamenco</button>
+    <button data-genre="Anatolian Rock">Anatolian Rock</button>
+    <button data-genre="Latin">Latin</button>
   </div>
+
   <h2>Featured discoveries</h2>
-  <div class="grid" id="tracks"></div>
-  <p class="note">These are demonstration entries. Your own songs, album covers and YouTube links can be added when we connect your music catalog.</p>
+  <section class="grid" id="tracks"></section>
+  <p class="note">AtlasIKA celebrates musical cultures around the world. More songs and countries can be added to this catalogue.</p>
 </main>
+
 <footer>AtlasIKA · Celebrating music and cultures around the world.</footer>
-<div class="player">
-  <div class="player-info"><strong id="now">Welcome to AtlasIKA</strong><small id="sub">Choose a discovery to begin</small></div>
-  <span id="status">Ready</span>
-  <button class="filter" id="stop">Stop</button>
-</div>
+
+<section class="player" aria-label="Music player">
+  <div class="player-top">
+    <div>
+      <div id="now">Welcome to AtlasIKA</div>
+      <small id="sub">Choose a discovery to begin</small>
+    </div>
+    <div>
+      <div id="status">Ready</div>
+      <button id="stop" type="button">Stop</button>
+    </div>
+  </div>
+  <iframe id="suno-frame" class="hidden"
+    title="Suno music player"
+    allow="autoplay; encrypted-media"
+    referrerpolicy="strict-origin-when-cross-origin">
+  </iframe>
+</section>
+
 <script>
-const songs=[
- {title:"Sounds of the Mediterranean",country:"Mediterranean",genre:"Folk",icon:"🌊"},
- {title:"Flamenco Roots",country:"Andalusia, Spain",genre:"Flamenco",icon:"🎸"},
- {title:"Anatolian Journeys",country:"Türkiye",genre:"Anatolian Rock",icon:"🎶"},
- {title:"Latin Rhythms",country:"Latin America",genre:"Latin",icon:"💃"},
-  {title:"Gülüm",country:"Türkiye",genre:"Anatolian Rock",icon:"🎸",suno:"88c60339-828a-4f4c-af94-3e97502ddad1"}
+const songs = [
+  {
+    title: "Gülüm",
+    country: "Türkiye",
+    genre: "Anatolian Rock",
+    icon: "🎸",
+    suno: "88c60339-828a-4f4c-af94-3e97502ddad1"
+  }
 ];
-let genre="All";
-const tracks=document.getElementById("tracks");
-function render(){
- const q=document.getElementById("search").value.toLowerCase();
- tracks.innerHTML="";
- songs.filter(s=>(genre==="All"||s.genre===genre)&&[s.title,s.country,s.genre].join(" ").toLowerCase().includes(q)).forEach(s=>{
-  const card=document.createElement("article");card.className="card";
-  const art=document.createElement("div");art.className="art";art.textContent=s.icon;
-  const info=document.createElement("div");info.className="info";
-  const title=document.createElement("h3");title.textContent=s.title;
-  const detail=document.createElement("p");detail.textContent=s.country+" · "+s.genre;
-  const button=document.createElement("button");button.className="play";button.textContent="Select discovery";
- button.onclick=()=>{document.getElementById("now").textContent=s.title;document.getElementById("sub").textContent=s.country+" · "+s.genre;if(s.youtube){document.getElementById("status").textContent="Playing on YouTube";let player=document.getElementById("youtube-player");if(!player){player=document.createElement("iframe");player.id="youtube-player";player.width="100%";player.height="200";player.style="border:0;border-radius:12px;margin-top:12px";player.allow="autoplay; encrypted-media; picture-in-picture";player.allowFullscreen=true;document.querySelector(".player").appendChild(player)}player.src="https://www.youtube.com/embed/"+s.youtube+"?autoplay=1";}else{document.getElementById("status").textContent="No audio linked yet";}};
-  info.append(title,detail,button);card.append(art,info);tracks.append(card);
- });
+
+let activeGenre = "All";
+
+const tracks = document.getElementById("tracks");
+const search = document.getElementById("search");
+const frame = document.getElementById("suno-frame");
+
+function render() {
+  const query = search.value.toLowerCase().trim();
+  const filtered = songs.filter(song => {
+    const matchesGenre = activeGenre === "All" || song.genre === activeGenre;
+    const matchesSearch = `${song.title} ${song.country} ${song.genre}`
+      .toLowerCase().includes(query);
+    return matchesGenre && matchesSearch;
+  });
+
+  tracks.innerHTML = "";
+
+  if (!filtered.length) {
+    tracks.innerHTML = "<p>No songs found. Try another search.</p>";
+    return;
+  }
+
+  filtered.forEach(song => {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const cover = document.createElement("div");
+    cover.className = "cover";
+    cover.textContent = song.icon;
+
+    const title = document.createElement("h3");
+    title.textContent = song.title;
+
+    const info = document.createElement("p");
+    info.textContent = `${song.country} · ${song.genre}`;
+
+    const play = document.createElement("button");
+    play.type = "button";
+    play.textContent = "▶ Play song";
+    play.addEventListener("click", () => playSong(song));
+
+    card.append(cover, title, info, play);
+    tracks.appendChild(card);
+  });
 }
-document.getElementById("search").addEventListener("input",render);
-document.querySelectorAll(".filter").forEach(b=>b.dataset.genre&&b.addEventListener("click",()=>{
- genre=b.dataset.genre;document.querySelectorAll("[data-genre]").forEach(x=>x.classList.toggle("active",x===b));render();
-}));
-document.getElementById("stop").onclick=()=>{document.getElementById("now").textContent="Welcome to AtlasIKA";document.getElementById("sub").textContent="Choose a discovery to begin";document.getElementById("status").textContent="Ready";const player=document.getElementById("youtube-player");if(player)player.remove();};</script>
+
+function playSong(song) {
+  document.getElementById("now").textContent = song.title;
+  document.getElementById("sub").textContent =
+    `${song.country} · ${song.genre}`;
+  document.getElementById("status").textContent = "Playing on Suno";
+
+  frame.src = `https://suno.com/embed/${encodeURIComponent(song.suno)}`;
+  frame.classList.remove("hidden");
+}
+
+document.getElementById("stop").addEventListener("click", () => {
+  frame.src = "about:blank";
+  frame.classList.add("hidden");
+  document.getElementById("now").textContent = "Welcome to AtlasIKA";
+  document.getElementById("sub").textContent = "Choose a discovery to begin";
+  document.getElementById("status").textContent = "Ready";
+});
+
+document.querySelectorAll("[data-genre]").forEach(button => {
+  button.addEventListener("click", () => {
+    activeGenre = button.dataset.genre;
+    document.querySelectorAll("[data-genre]").forEach(item => {
+      item.classList.toggle("active", item === button);
+    });
+    render();
+  });
+});
+
+search.addEventListener("input", render);
+render();
+</script>
 </body>
 </html>
