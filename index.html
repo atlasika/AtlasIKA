@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10130f">
+<title>AtlasIKA — Music Without Borders</title>
+<style>
+:root{color-scheme:dark;--bg:#10130f;--panel:#191e18;--muted:#a8b0a4;--gold:#e5bd70;--line:#30372e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#f6f5ee;font-family:Arial,sans-serif}
+header{padding:22px 6%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.logo{font-size:25px;font-weight:800;letter-spacing:1px}.logo span{color:var(--gold)}
+header small{color:var(--muted)}
+main{max-width:1200px;margin:auto;padding:38px 6% 150px}
+.hero{padding:42px 0 34px}
+.eyebrow{color:var(--gold);text-transform:uppercase;letter-spacing:3px;font-size:12px}
+h1{font-size:clamp(38px,7vw,76px);line-height:1.02;margin:18px 0}
+.hero p{color:var(--muted);font-size:17px;line-height:1.6;max-width:570px}
+.search{width:100%;max-width:520px;padding:15px;border:1px solid var(--line);background:var(--panel);border-radius:10px;color:white;font-size:16px}
+h2{font-size:24px;margin:36px 0 18px}
+.filters{display:flex;gap:9px;flex-wrap:wrap}
+.filter{background:var(--panel);border:1px solid var(--line);color:white;padding:10px 15px;border-radius:30px;cursor:pointer}
+.filter.active,.filter:hover{background:var(--gold);color:#171710}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+.art{aspect-ratio:1;display:grid;place-items:center;font-size:65px;background:linear-gradient(145deg,#344b36,#b18b53)}
+.card:nth-child(2) .art{background:linear-gradient(145deg,#673b30,#d3a65d)}
+.card:nth-child(3) .art{background:linear-gradient(145deg,#263f55,#8da9a0)}
+.card:nth-child(4) .art{background:linear-gradient(145deg,#513e65,#c58c72)}
+.info{padding:15px}.info h3{margin:0 0 8px;font-size:17px}.info p{margin:0;color:var(--muted);font-size:13px}
+.play{margin-top:15px;width:100%;padding:11px;border:0;border-radius:7px;background:var(--gold);color:#171710;font-weight:bold;cursor:pointer}
+.note{color:var(--muted);font-size:13px;line-height:1.6;margin-top:25px}
+footer{border-top:1px solid var(--line);padding:24px 6%;color:var(--muted);font-size:13px}
+.player{position:fixed;bottom:0;left:0;right:0;background:#20251e;border-top:1px solid var(--line);padding:15px 6%;display:flex;align-items:center;gap:15px}
+.player-info{flex:1;min-width:0}.player-info strong{display:block}.player-info small{color:var(--muted)}
+#status{color:var(--gold);font-size:13px}
+@media(max-width:520px){header{padding:18px 5%}main{padding:25px 5% 140px}.hero{padding-top:28px}.player{padding:13px 5%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Atlas<span>IKA</span></div>
+  <small>MUSIC WITHOUT BORDERS</small>
+</header>
+<main>
+  <section class="hero">
+    <div class="eyebrow">One world · Thousands of sounds</div>
+    <h1>Discover the<br>sound of the world.</h1>
+    <p>Travel through countries, cultures and musical traditions. Your journey into world music starts here.</p>
+    <input class="search" id="search" type="search" placeholder="Search music, country or genre..." aria-label="Search music">
+  </section>
+  <h2>Explore by musical tradition</h2>
+  <div class="filters" id="filters">
+    <button class="filter active" data-genre="All">All music</button>
+    <button class="filter" data-genre="Folk">Folk</button>
+    <button class="filter" data-genre="Flamenco">Flamenco</button>
+    <button class="filter" data-genre="Anatolian Rock">Anatolian Rock</button>
+    <button class="filter" data-genre="Latin">Latin</button>
+  </div>
+  <h2>Featured discoveries</h2>
+  <div class="grid" id="tracks"></div>
+  <p class="note">These are demonstration entries. Your own songs, album covers and YouTube links can be added when we connect your music catalog.</p>
+</main>
+<footer>AtlasIKA · Celebrating music and cultures around the world.</footer>
+<div class="player">
+  <div class="player-info"><strong id="now">Welcome to AtlasIKA</strong><small id="sub">Choose a discovery to begin</small></div>
+  <span id="status">Ready</span>
+  <button class="filter" id="stop">Stop</button>
+</div>
+<script>
+const songs=[
+ {title:"Sounds of the Mediterranean",country:"Mediterranean",genre:"Folk",icon:"🌊"},
+ {title:"Flamenco Roots",country:"Andalusia, Spain",genre:"Flamenco",icon:"🎸"},
+ {title:"Anatolian Journeys",country:"Türkiye",genre:"Anatolian Rock",icon:"🎶"},
+ {title:"Latin Rhythms",country:"Latin America",genre:"Latin",icon:"💃"}
+];
+let genre="All";
+const tracks=document.getElementById("tracks");
+function render(){
+ const q=document.getElementById("search").value.toLowerCase();
+ tracks.innerHTML="";
+ songs.filter(s=>(genre==="All"||s.genre===genre)&&[s.title,s.country,s.genre].join(" ").toLowerCase().includes(q)).forEach(s=>{
+  const card=document.createElement("article");card.className="card";
+  const art=document.createElement("div");art.className="art";art.textContent=s.icon;
+  const info=document.createElement("div");info.className="info";
+  const title=document.createElement("h3");title.textContent=s.title;
+  const detail=document.createElement("p");detail.textContent=s.country+" · "+s.genre;
+  const button=document.createElement("button");button.className="play";button.textContent="Select discovery";
+  button.onclick=()=>{document.getElementById("now").textContent=s.title;document.getElementById("sub").textContent=s.country+" · "+s.genre;document.getElementById("status").textContent="No audio linked yet";};
+  info.append(title,detail,button);card.append(art,info);tracks.append(card);
+ });
+}
+document.getElementById("search").addEventListener("input",render);
+document.querySelectorAll(".filter").forEach(b=>b.dataset.genre&&b.addEventListener("click",()=>{
+ genre=b.dataset.genre;document.querySelectorAll("[data-genre]").forEach(x=>x.classList.toggle("active",x===b));render();
+}));
+document.getElementById("stop").onclick=()=>{document.getElementById("now").textContent="Welcome to AtlasIKA";document.getElementById("sub").textContent="Choose a discovery to begin";document.getElementById("status").textContent="Ready";};
+render();
+</script>
+</body>
+</html>
