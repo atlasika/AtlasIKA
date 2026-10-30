@@ -1,4 +1,6 @@
-const CACHE_NAME = "atlasika-v1";
+
+const CACHE_NAME = "atlasika-v2";
+
 const FILES_TO_CACHE = [
   "/AtlasIKA/",
   "/AtlasIKA/index.html",
@@ -24,11 +26,19 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
-  if (event.request.method === "GET") {
+  if (event.request.method !== "GET") return;
+
+  if (event.request.mode === "navigate") {
     event.respondWith(
-      caches.match(event.request).then(cached =>
-        cached || fetch(event.request)
-      )
+      fetch(event.request)
+        .then(response => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache =>
+            cache.put("/AtlasIKA/", copy)
+          );
+          return response;
+        })
+        .catch(() => caches.match("/AtlasIKA/"))
     );
   }
 });
