@@ -734,71 +734,12 @@
             return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
-        let spotifyIframeAPI = null;
-        let spotifyEmbedController = null;
-        let spotifyPendingPlay = false;
-
-        window.onSpotifyIframeApiReady = (IFrameAPI) => {
-            spotifyIframeAPI = IFrameAPI;
-            initializeSpotifyEmbed();
-        };
-
-        function initializeSpotifyEmbed() {
-            if (!spotifyIframeAPI || spotifyEmbedController) return;
-            const element = document.getElementById('suno-player');
-            if (!element) return;
-            const songs = getFilteredSongs();
-            const song = songs[currentTrackIndex] || songs.find(item => getSpotifyTrackId(item.audio_url));
-            const trackId = song ? getSpotifyTrackId(song.audio_url) : null;
-            if (!trackId) return;
-            spotifyIframeAPI.createController(element, {
-                width: '100%', height: 152, uri: 'spotify:track:' + trackId
-            }, (controller) => {
-                spotifyEmbedController = controller;
-                controller.addListener('ready', () => {
-                    if (spotifyPendingPlay) {
-                        spotifyPendingPlay = false;
-                        controller.play();
-                    }
-                });
-                if (spotifyPendingPlay) {
-                    spotifyPendingPlay = false;
-                    controller.play();
-                }
-            });
-        }
-
-        function requestSpotifyPlayback(trackId) {
-            if (!trackId) return;
-            if (spotifyEmbedController) {
-                spotifyEmbedController.loadEntity('spotify:track:' + trackId);
-                spotifyEmbedController.play();
-            } else {
-                spotifyPendingPlay = true;
-                initializeSpotifyEmbed();
-            }
-        }
-
         function getSunoSongId(url) {
             const match = String(url || '').match(/suno\.com\/(?:song|embed)\/([a-zA-Z0-9-]+)/i);
             return match ? match[1] : null;
         }
 
-        function getSpotifyTrackId(url) {
-            const value = String(url || '').trim();
-            const match = value.match(/(?:open\.)?spotify\.com\/(?:embed\/)?track\/([a-zA-Z0-9]+)/i)
-                || value.match(/spotify:track:([a-zA-Z0-9]+)/i);
-            return match ? match[1] : null;
-        }
-
-        function getSongPlatform(song) {
-            return getSpotifyTrackId(song && song.audio_url) ? 'spotify' : 'suno';
-        }
-
-        function getSpotifyEmbedUrl(url) {
-            const id = getSpotifyTrackId(url);
-            return id ? 'https://open.spotify.com/embed/track/' + encodeURIComponent(id) + '?utm_source=generator' : null;
-        }
+        function getSongPlatform(song) { return getSunoSongId(song && song.audio_url) ? 'suno' : 'audio'; }
 
         function prepareSong(index) {
             const songs = getFilteredSongs();
@@ -807,7 +748,6 @@
             currentTrackIndex = index;
             const song = songs[currentTrackIndex];
             const sunoId = getSunoSongId(song.audio_url);
-            const spotifyEmbed = getSpotifyEmbedUrl(song.audio_url);
             const sunoContainer = document.getElementById('suno-player-container');
             const sunoFrame = document.getElementById('suno-player');
             const timeInfo = document.querySelector('.time-info');
@@ -817,23 +757,7 @@
             document.getElementById('console-cover-img').src = song.cover_url || 'https://via.placeholder.com/90/111/00f0ff?text=AtlasIKA';
 
             audioElement.pause();
-            if (spotifyEmbed) {
-                audioElement.removeAttribute('src');
-                audioElement.load();
-                sunoContainer.style.display = 'block';
-                if (spotifyEmbedController) {
-                    spotifyEmbedController.loadEntity('spotify:track:' + getSpotifyTrackId(song.audio_url));
-                } else {
-                    sunoFrame.innerHTML = '';
-                    initializeSpotifyEmbed();
-                }
-                sunoFrame.title = 'Reproductor Spotify';
-                progressContainer.style.display = 'none';
-                if (timeInfo) timeInfo.style.display = 'none';
-                playPauseBtn.style.display = 'none';
-                document.getElementById('current-status-text').innerText = 'Reproductor Spotify';
-                eqContainer.classList.remove('playing-active');
-            } else if (sunoId) {
+            if (sunoId) {
                 audioElement.removeAttribute('src');
                 audioElement.load();
                 sunoContainer.style.display = 'block';
@@ -870,13 +794,10 @@
             incrementSongViews(song.id);
             prepareSong(index);
 
-            if (autoPlay && !getSunoSongId(song.audio_url) && !getSpotifyTrackId(song.audio_url)) {
+            if (autoPlay && !getSunoSongId(song.audio_url)) {
                 audioElement.play().then(() => {
                     updatePlayButtonState(true);
                 }).catch(e => console.log('Autoplay bloqueado por navegador:', e));
-            } else if (getSpotifyTrackId(song.audio_url)) {
-                requestSpotifyPlayback(getSpotifyTrackId(song.audio_url));
-                updatePlayButtonState(false);
             } else if (getSunoSongId(song.audio_url)) {
                 updatePlayButtonState(false);
             }
@@ -1279,7 +1200,7 @@
                                     ${isNew && !isCurrentPlaying ? '<span class="new-badge">NUEVO</span>' : ''}
                                 </div>
                                 <h3>${escapeHtml(song.title || '')}</h3>
-                                <div style="color:var(--text-muted);font-size:.82rem;margin:2px 0 6px;">${escapeHtml(song.artist || 'AtlasIKA')} · ${getSongPlatform(song) === 'spotify' ? 'Spotify' : 'Suno'}</div>
+                                <div style="color:var(--text-muted);font-size:.82rem;margin:2px 0 6px;">${escapeHtml(song.artist || 'AtlasIKA')} · ${getSongPlatform(song) === 'suno' ? 'Suno' : 'Audio'}</div>
                                 <div class="song-stats-row"><span><i class="fa-solid fa-eye" style="color:var(--accent-primary);"></i> ${song.views || 0} reproducciones</span></div>
                             </div>
                         </div>
@@ -1420,24 +1341,14 @@
 
             resetAdminForm();
             closeModal('admin-modal');
-            const spotifyApiScript = document.createElement("script");
-        spotifyApiScript.src = "https://open.spotify.com/embed/iframe-api/v1";
-        spotifyApiScript.async = true;
-        document.body.appendChild(spotifyApiScript);
-
-        fetchSongsFromCloud();
+            fetchSongsFromCloud();
         }
 
         async function deleteSong(id) {
             if (confirm("¿Seguro que deseas eliminar esta canción?")) {
                 const { error } = await supabaseClient.from('songs').delete().eq('id', id);
                 if (error) { alert("Error: " + error.message); return; }
-                const spotifyApiScript = document.createElement("script");
-        spotifyApiScript.src = "https://open.spotify.com/embed/iframe-api/v1";
-        spotifyApiScript.async = true;
-        document.body.appendChild(spotifyApiScript);
-
-        fetchSongsFromCloud();
+            fetchSongsFromCloud();
             }
         }
 
@@ -1447,13 +1358,7 @@
                 .then(() => console.log('Service Worker registrado correctamente'))
                 .catch((err) => console.log('Fallo al registrar el Service Worker', err));
         }
-
-        const spotifyApiScript = document.createElement("script");
-        spotifyApiScript.src = "https://open.spotify.com/embed/iframe-api/v1";
-        spotifyApiScript.async = true;
-        document.body.appendChild(spotifyApiScript);
-
-        fetchSongsFromCloud();
+            fetchSongsFromCloud();
     </script>
 </body>
 </html>
