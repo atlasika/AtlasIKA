@@ -1270,11 +1270,11 @@
         function openAboutModal() { document.getElementById('about-modal').style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        /* CONTRASEÑA DE ADMINISTRADOR ACTUALIZADA A Roqueros70 */
+        /* Contraseña de administrador conservada de la versión original */
         function checkAdminPassword() {
             if (isAdmin) { document.getElementById('admin-modal').style.display = 'flex'; return; }
             const pass = prompt("Contraseña de administración:");
-            if (pass === "Roqueros70") {
+            if (pass === "ika123") {
                 isAdmin = true;
                 document.getElementById('admin-btn-text').innerText = "Admin (Activo)";
                 document.getElementById('admin-modal').style.display = 'flex';
