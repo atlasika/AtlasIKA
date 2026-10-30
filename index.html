@@ -535,7 +535,7 @@
             <div class="console-info">
                 <div class="console-title" id="current-song-title">Selecciona una canción para empezar</div>
                 <div class="suno-player-container" id="suno-player-container">
-                    <iframe id="suno-player" title="Reproductor Suno" height="150" allow="autoplay; encrypted-media; fullscreen" allowfullscreen loading="lazy"></iframe>
+                    <div id="suno-player" title="Reproductor multimedia"></div>
                 </div>
                 
                 <div class="progress-container" id="progress-container" onclick="seekAudio(event)">
@@ -761,16 +761,14 @@
                 audioElement.removeAttribute('src');
                 audioElement.load();
                 sunoContainer.style.display = 'block';
-                sunoFrame.src = 'https://suno.com/embed/' + encodeURIComponent(sunoId);
-                sunoFrame.title = 'Reproductor Suno';
-                sunoFrame.style.height = '150px';
+                sunoFrame.innerHTML = '<iframe title="Reproductor Suno" src="https://suno.com/embed/' + encodeURIComponent(sunoId) + '?autoplay=1" height="150" allow="autoplay; encrypted-media; fullscreen" allowfullscreen loading="lazy" style="width:100%;border:0;border-radius:12px"></iframe>';
                 progressContainer.style.display = 'none';
                 if (timeInfo) timeInfo.style.display = 'none';
                 playPauseBtn.style.display = 'none';
                 document.getElementById('current-status-text').innerText = 'Reproductor Suno';
                 eqContainer.classList.remove('playing-active');
             } else {
-                sunoFrame.src = '';
+                sunoFrame.innerHTML = '';
                 sunoContainer.style.display = 'none';
                 progressContainer.style.display = '';
                 if (timeInfo) timeInfo.style.display = '';
