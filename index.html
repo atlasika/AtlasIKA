@@ -269,5 +269,12 @@ document.querySelectorAll("[data-genre]").forEach(button => {
 search.addEventListener("input", render);
 render();
 </script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js");
+  });
+}
+</script> 
 </body>
 </html>
