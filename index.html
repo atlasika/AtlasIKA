@@ -23,6 +23,40 @@ body {
   font-family:Arial,sans-serif;
 }
 header {
+.album-tabs {
+  display: flex;
+  gap: 10px;
+  padding: 16px 6%;
+  overflow-x: auto;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.album-tabs {
+  display: flex;
+  gap: 10px;
+  padding: 16px 6%;
+  overflow-x: auto;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.album-tabs button {
+  background: var(--panel);
+  color: #f6f5ee;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.album-tabs button.active,
+.album-tabs button:hover {
+  background: var(--gold);
+  color: #10130f;
+  border-color: var(--gold);
+}
   padding:22px 6%;
   display:flex;
   align-items:center;
@@ -147,8 +181,13 @@ footer {
   <button data-language="ru">🇷🇺 Russian</button>
   <button data-language="other">🌍 Other Languages</button>
 </nav>
-
-<main>
+<section class="albums-section" id="albums">
+  <h2>Albums of the World</h2>
+  <p>Discover music from different countries and languages.</p>
+  <div class="album-grid" id="album-grid">
+  </div>
+</section>
+  <main>
   <section class="hero">
     <div class="eyebrow">One world · A thousand sounds</div>
     <h1>Discover music without borders.</h1>
