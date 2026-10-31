@@ -61,6 +61,13 @@
         .top-info-bar {
             display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 1.5rem;
         }
+        .ui-language-label { color: var(--accent-primary); font-size: 1.05rem; }
+        .ui-language-selector { min-width: 145px; padding: 6px 12px; }
+        .song-summary { cursor: pointer; }
+        .song-summary-play { flex: 0 0 36px; width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; border:1px solid var(--accent-primary); background:rgba(0,240,255,.13); color:var(--accent-primary); cursor:pointer; font-size:.9rem; transition:all .2s ease; }
+        .song-summary-play:hover { background:var(--accent-primary); color:#000; box-shadow:0 0 18px rgba(0,240,255,.55); }
+        .song-summary-expand { flex:0 0 38px; width:38px; height:36px; display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; color:var(--accent-primary); cursor:pointer; }
+        .song-description { color:var(--text-muted); font-size:.9rem; line-height:1.5; margin:10px 0 4px; white-space:pre-wrap; }
         .contact-btn, .about-btn {
             background: rgba(0, 240, 255, 0.1); border: 1px solid var(--accent-primary); color: var(--accent-primary);
             padding: 6px 16px; border-radius: 30px; font-weight: 700; font-size: 0.85rem; text-decoration: none;
@@ -457,6 +464,36 @@
         .comment-empty { color:var(--text-muted); font-size:.85rem; }
         .country-chip { display:inline-flex; align-items:center; padding:3px 8px; border:1px solid rgba(0,240,255,.3); border-radius:20px; color:var(--accent-primary); font-size:.76rem; margin-bottom:5px; }
 
+
+        /* CHAT EN DIRECTO ATLASIKA */
+        .live-chat-section{width:100%;max-width:900px;margin:28px auto 34px;padding:18px;border:1px solid var(--border-color);border-radius:18px;background:var(--card-bg);box-shadow:0 12px 36px rgba(0,0,0,.22)}
+        .live-chat-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+        .live-chat-header h2{font-size:1.25rem;color:var(--accent-primary);display:flex;align-items:center;gap:9px}
+        .chat-online{font-size:.8rem;color:#8ee6b0;display:flex;align-items:center;gap:7px}
+        .chat-online:before{content:'';width:8px;height:8px;border-radius:50%;background:#38d987;box-shadow:0 0 9px #38d987}
+        .chat-login{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-bottom:12px}
+        .chat-login input,.chat-compose textarea{min-width:0;width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--border-color);background:#0b1020;color:#fff;font:inherit;outline:none}
+        .chat-messages{height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;padding:10px;border-radius:12px;background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.07)}
+        .chat-message{padding:10px 11px;border-radius:11px;background:rgba(255,255,255,.055);overflow-wrap:anywhere;text-align:left}
+        .chat-message.own{border:1px solid rgba(0,240,255,.24);background:rgba(0,240,255,.055)}
+        .chat-message-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;font-size:.75rem;color:var(--text-muted)}
+        .chat-message-author{font-weight:800;color:#fff;font-size:.84rem}.chat-message-body{white-space:pre-wrap;line-height:1.45;font-size:.92rem}
+        .chat-edited{font-style:italic;color:var(--text-muted)}
+        .chat-message-actions{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+        .chat-action{border:1px solid var(--border-color);background:rgba(255,255,255,.06);color:#dbeafe;border-radius:7px;padding:4px 8px;font-size:.72rem;cursor:pointer}
+        .chat-action.danger{color:#ff9aa5}.chat-compose{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:11px;align-items:end}
+        .chat-compose textarea{min-height:48px;max-height:120px;resize:vertical}.chat-send,.chat-primary{border:0;border-radius:10px;padding:11px 16px;background:var(--accent-primary);color:#001014;font-weight:800;cursor:pointer}
+        .chat-note{font-size:.75rem;color:var(--text-muted);margin-top:8px;line-height:1.4}.chat-admin-tools{margin-top:9px;padding:9px;border:1px dashed rgba(0,240,255,.3);border-radius:9px;font-size:.75rem;color:var(--text-muted);overflow-wrap:anywhere}
+        .chat-empty{color:var(--text-muted);font-size:.85rem;text-align:center;margin:auto}
+        @media(max-width:600px){.live-chat-section{padding:13px}.chat-messages{height:300px}.chat-login{grid-template-columns:1fr}.chat-compose{grid-template-columns:1fr}.chat-send{justify-self:end}}
+
+
+        .lyrics-toggle{margin-top:10px;border:1px solid var(--accent-primary);background:rgba(0,240,255,.09);color:var(--accent-primary);border-radius:9px;padding:7px 12px;font-weight:800;cursor:pointer}
+        .lyrics-panel{display:none;margin-top:10px;padding:14px;border:1px solid rgba(0,240,255,.22);border-radius:12px;background:rgba(0,0,0,.28);max-height:300px;overflow:auto;white-space:pre-wrap;line-height:1.65;color:#eafaff;text-align:left}
+        .collaborator-section{width:100%;max-width:900px;margin:28px auto;padding:18px;border:1px solid rgba(255,0,127,.28);border-radius:18px;background:var(--card-bg);box-shadow:0 12px 36px rgba(0,0,0,.2)}
+        .collaborator-section h2{color:var(--accent-secondary);font-size:1.2rem;margin-bottom:8px}.collab-intro{color:var(--text-muted);font-size:.86rem;line-height:1.5;margin-bottom:14px}
+        .collab-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.collab-field{display:flex;flex-direction:column;gap:5px}.collab-field.full{grid-column:1/-1}.collab-field label{font-size:.8rem;color:var(--text-muted);font-weight:700}.collab-field input,.collab-field select,.collab-field textarea{width:100%;min-width:0;padding:10px 11px;border:1px solid var(--border-color);border-radius:9px;background:#0b1020;color:#fff;font:inherit;outline:none}.collab-field textarea{resize:vertical;min-height:82px}.collab-submit{justify-self:start;border:0;border-radius:10px;padding:11px 16px;background:var(--accent-secondary);color:#fff;font-weight:800;cursor:pointer}.collab-status-list{margin-top:16px;display:grid;gap:8px}.collab-status-item,.collab-review-item{padding:11px;border:1px solid var(--border-color);border-radius:10px;background:rgba(255,255,255,.035);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.collab-status{font-size:.75rem;font-weight:800;text-transform:uppercase}.collab-status.pending{color:#ffd166}.collab-status.approved{color:#68e0a5}.collab-status.rejected{color:#ff8995}.collab-review-actions{display:flex;gap:7px;flex-wrap:wrap}.collab-review-actions button{border:1px solid var(--border-color);background:rgba(255,255,255,.07);color:#fff;padding:6px 10px;border-radius:8px;cursor:pointer}.collab-review-actions .approve{color:#68e0a5;border-color:#68e0a5}.collab-review-actions .reject{color:#ff8995;border-color:#ff8995}.collab-admin-panel{margin-top:14px;padding-top:12px;border-top:1px solid var(--border-color)}.collab-admin-panel h3{font-size:1rem;color:var(--accent-primary);margin-bottom:9px}
+        @media(max-width:600px){.collaborator-section{padding:13px}.collab-form{grid-template-columns:1fr}.collab-field.full{grid-column:auto}}
     </style>
 </head>
 <body>
@@ -465,24 +502,30 @@
         <h1>AtlasIKA</h1>
         
         <div class="top-info-bar">
-            <button class="about-btn" onclick="openAboutModal()">
-                <i class="fa-solid fa-circle-info"></i> Sobre AtlasIKA
+            <label class="ui-language-label" for="ui-language-selector"><i class="fa-solid fa-language"></i></label>
+            <select id="ui-language-selector" class="interactive-select ui-language-selector" onchange="changeInterfaceLanguage(this.value)" aria-label="Interface language">
+                <option value="en">🇬🇧 English</option>
+                <option value="es" selected>🇪🇸 Español</option>
+                <option value="tr">🇹🇷 Türkçe</option>
+            </select>
+            <button class="about-btn" id="about-btn" data-i18n="aboutButton" onclick="openAboutModal()">
+                <i class="fa-solid fa-circle-info"></i> <span data-i18n="aboutButton">Sobre AtlasIKA</span>
             </button>
             <a href="mailto:ikamusicstudios@gmail.com" class="contact-btn">
-                <i class="fa-solid fa-envelope"></i> Contacto
+                <i class="fa-solid fa-envelope"></i> <span data-i18n="contact">Contacto</span>
             </a>
         </div>
     </header>
 
     <!-- SECCIÓN INTERACTIVA DE IDIOMA / ESTILO -->
     <div class="interactive-mood-box">
-        <h3><i class="fa-solid fa-globe"></i> Explora el atlas musical</h3>
+        <h3><i class="fa-solid fa-globe"></i> <span data-i18n="explore">Explora el atlas musical</span></h3>
         <div class="interactive-controls">
             <select id="select-country" class="interactive-select" onchange="handleCountryChange()">
-                <option value="">-- Todos los países --</option>
+                <option value="" data-i18n="allCountries">-- Todos los países --</option>
             </select>
             <select id="select-language" class="interactive-select" onchange="handleLanguageChange()">
-                <option value="">-- Elige Idioma --</option>
+                <option value="" data-i18n="chooseLanguage">-- Elige Idioma --</option>
                 <option value="Español">Español</option>
                 <option value="Inglés">Inglés</option>
                 <option value="Francés">Francés</option>
@@ -493,7 +536,7 @@
             </select>
 
             <select id="select-style" class="interactive-select" disabled onchange="handleStyleChange()">
-                <option value="">-- Elige Estilo --</option>
+                <option value="" data-i18n="chooseStyle">-- Elige Estilo --</option>
                 <option value="Pop">Pop</option>
                 <option value="Rock">Rock</option>
                 <option value="Folk">Folk</option>
@@ -502,7 +545,7 @@
             </select>
 
             <button class="reset-filter-btn" id="reset-interactive-btn" style="display:none;" onclick="resetInteractiveFilters()">
-                <i class="fa-solid fa-rotate-left"></i> Limpiar filtro
+                <i class="fa-solid fa-rotate-left"></i> <span data-i18n="clearFilter">Limpiar filtro</span>
             </button>
         </div>
     </div>
@@ -511,7 +554,7 @@
     <div class="search-container">
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="song-search-input" class="search-input" placeholder="Buscar canción..." oninput="handleSearchInput()">
+            <input type="text" id="song-search-input" class="search-input" placeholder="Buscar canción..." data-i18n-placeholder="searchSong" oninput="handleSearchInput()">
             <button id="clear-search-btn" class="clear-search-btn" onclick="clearSearch()">&times;</button>
         </div>
     </div>
@@ -523,17 +566,17 @@
                 <div class="eq-bars" id="eq-animation-container">
                     <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
                 </div>
-                <span id="current-status-text">Consola en Directo</span>
+                <span id="current-status-text" data-i18n="liveConsole">Consola en Directo</span>
             </h2>
             <span class="song-genre" id="current-song-genre">---</span>
         </div>
 
         <div class="player-console-display">
             <div class="console-cover-wrapper">
-                <img id="console-cover-img" src="https://via.placeholder.com/90/111/00f0ff?text=AtlasIKA" class="console-cover" alt="Carátula">
+                <img id="console-cover-img" src="https://via.placeholder.com/90/111/00f0ff?text=AtlasIKA" class="console-cover" alt="Cover" data-i18n-alt="cover">
             </div>
             <div class="console-info">
-                <div class="console-title" id="current-song-title">Selecciona una canción para empezar</div>
+                <div class="console-title" id="current-song-title" data-i18n="selectSong">Selecciona una canción para empezar</div>
                 <div class="suno-player-container" id="suno-player-container">
                     <div id="suno-player" title="Reproductor multimedia"></div>
                 </div>
@@ -550,42 +593,84 @@
                 </div>
             </div>
         </div>
+        <button type="button" id="lyrics-toggle-btn" class="lyrics-toggle" style="display:none" onclick="toggleCurrentLyrics()"><i class="fa-solid fa-align-left"></i> <span id="lyrics-toggle-label">Ver letra</span></button>
+        <div id="current-lyrics-panel" class="lyrics-panel" aria-live="polite"></div>
 
         <audio id="audio-element" preload="metadata"></audio>
 
         <div class="player-controls-bar">
-            <button class="control-btn" onclick="prevSong()"><i class="fa-solid fa-backward-step"></i> Anterior</button>
-            <button class="control-btn primary-btn" id="play-pause-btn" onclick="togglePlayPause()"><i class="fa-solid fa-play"></i> Reproducir</button>
-            <button class="control-btn" onclick="nextSong()"><i class="fa-solid fa-forward-step"></i> Siguiente</button>
-            <button class="control-btn active-mode" id="auto-chain-btn" onclick="toggleAutoChain()"><i class="fa-solid fa-radio"></i> Radio: ON</button>
-            <button class="control-btn" id="shuffle-btn" onclick="toggleShuffle()"><i class="fa-solid fa-shuffle"></i> Random: OFF</button>
+            <button class="control-btn" onclick="prevSong()"><i class="fa-solid fa-backward-step"></i> <span data-i18n="previous">Anterior</span></button>
+            <button class="control-btn primary-btn" id="play-pause-btn" onclick="togglePlayPause()"><i class="fa-solid fa-play"></i> <span data-i18n="play">Reproducir</span></button>
+            <button class="control-btn" onclick="nextSong()"><i class="fa-solid fa-forward-step"></i> <span data-i18n="next">Siguiente</span></button>
+            <button class="control-btn active-mode" id="auto-chain-btn" onclick="toggleAutoChain()" title="Alternar entre pasar a la siguiente canción o repetir la actual"><i class="fa-solid fa-forward-step"></i> <span data-i18n="radio">Al terminar</span>: <span id="end-mode-label" data-i18n="endNext">Siguiente canción</span></button>
+            <button class="control-btn" id="shuffle-btn" onclick="toggleShuffle()"><i class="fa-solid fa-shuffle"></i> <span data-i18n="random">Aleatorio</span>: OFF</button>
         </div>
     </div>
 
     <!-- CATEGORÍAS Y VISTAS -->
     <div class="categories-controls-wrapper">
         <div class="categories" id="category-filters">
-            <button class="cat-btn active" data-filter="all">Todas</button>
-            <button class="cat-btn news-filter" data-filter="novedades"><i class="fa-solid fa-fire"></i> 🔥 Novedades</button>
+            <button class="cat-btn active" data-filter="all" data-i18n="all">Todas</button>
+            <button class="cat-btn news-filter" data-filter="novedades"><i class="fa-solid fa-fire"></i> 🔥 <span data-i18n="newReleases">Novedades</span></button>
         </div>
 
         <div class="view-toggle-bar">
-            <button class="view-btn" id="grid-view-btn" onclick="switchView('grid')" title="Cuadrícula">
-                <i class="fa-solid fa-border-all"></i> Grid
+            <button class="view-btn" id="grid-view-btn" onclick="switchView('grid')" title="Cuadrícula" data-i18n-title="grid">
+                <i class="fa-solid fa-border-all"></i> <span data-i18n="grid">Grid</span>
             </button>
-            <button class="view-btn active" id="list-view-btn" onclick="switchView('list')" title="Lista">
-                <i class="fa-solid fa-bars"></i> Lista
+            <button class="view-btn active" id="list-view-btn" onclick="switchView('list')" title="Lista" data-i18n-title="list">
+                <i class="fa-solid fa-bars"></i> <span data-i18n="list">Lista</span>
             </button>
         </div>
     </div>
 
     <!-- LISTADO DE CANCIONES (VISTA LISTA POR DEFECTO) -->
     <div class="container" id="songs-container">
-        <p style="text-align: center; color: var(--text-muted);">Conectando con Supabase...</p>
+        <p style="text-align: center; color: var(--text-muted);" data-i18n="connecting">Conectando con Supabase...</p>
     </div>
 
+
+    <!-- CHAT EN DIRECT -->
+    <section class="live-chat-section" id="live-chat-section" aria-label="Chat en directo">
+        <div class="live-chat-header">
+            <h2><i class="fa-solid fa-comments"></i> <span id="chat-title">Chat en directo</span></h2>
+            <span class="chat-online" id="chat-online-count">Conectando…</span>
+        </div>
+        <div class="chat-login">
+            <input id="chat-nickname" type="text" maxlength="25" autocomplete="nickname" placeholder="Tu apodo (máx. 25 caracteres)" aria-label="Tu apodo">
+            <button class="chat-primary" id="chat-save-nickname" type="button" onclick="saveChatNickname()">Entrar al chat</button>
+        </div>
+        <div class="chat-messages" id="chat-messages" aria-live="polite"><p class="chat-empty">Conectando al chat…</p></div>
+        <form class="chat-compose" id="chat-compose" onsubmit="sendChatMessage(event)">
+            <textarea id="chat-message-input" maxlength="1000" rows="2" placeholder="Escribe un mensaje…" aria-label="Mensaje" required></textarea>
+            <button class="chat-send" id="chat-send-button" type="submit">Enviar <i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+        <p class="chat-note" id="chat-note">Puedes participar con un apodo, sin crear una cuenta. Respeta a los demás usuarios.</p>
+        <div class="chat-admin-tools" id="chat-admin-tools" hidden></div>
+    </section>
+
+    <!-- ENVÍO DE CANCIONES POR COLABORADORES: las propuestas siempre requieren aprobación -->
+    <section class="collaborator-section" id="collaborator-section">
+        <h2><i class="fa-solid fa-music"></i> <span id="collab-title">Comparte tu canción</span></h2>
+        <p class="collab-intro" id="collab-intro">¿Eres creador en Suno? Envía tu canción a AtlasIKA. Tu propuesta quedará pendiente y solo se publicará cuando el administrador la apruebe.</p>
+        <form id="collab-submit-form" class="collab-form" onsubmit="submitCollaboratorSong(event)">
+            <div class="collab-field"><label for="collab-nickname" id="collab-label-nickname">Tu nombre artístico</label><input id="collab-nickname" maxlength="80" required placeholder="Nombre artístico"></div>
+            <div class="collab-field"><label for="collab-title-input" id="collab-label-title">Título de la canción</label><input id="collab-title-input" maxlength="160" required></div>
+            <div class="collab-field"><label for="collab-country" id="collab-label-country">País</label><input id="collab-country" maxlength="80" placeholder="País / bandera"></div>
+            <div class="collab-field"><label for="collab-language" id="collab-label-language">Idioma</label><select id="collab-language"><option>Español</option><option>Inglés</option><option>Francés</option><option>Italiano</option><option>Griego</option><option>Turco</option><option>Ruso</option><option>Otro</option></select></div>
+            <div class="collab-field"><label for="collab-style" id="collab-label-style">Estilo musical</label><input id="collab-style" maxlength="80" required placeholder="Rock, Folk, Flamenco…"></div>
+            <div class="collab-field"><label for="collab-suno-url" id="collab-label-url">Enlace de Suno</label><input id="collab-suno-url" type="url" required placeholder="https://suno.com/song/..."></div>
+            <div class="collab-field full"><label for="collab-cover" id="collab-label-cover">Enlace de portada (opcional)</label><input id="collab-cover" type="url" placeholder="https://..."></div>
+            <div class="collab-field full"><label for="collab-description" id="collab-label-description">Descripción breve (opcional)</label><textarea id="collab-description" maxlength="500"></textarea></div>
+            <div class="collab-field full"><label for="collab-lyrics" id="collab-label-lyrics">Letra (opcional)</label><textarea id="collab-lyrics" maxlength="12000" placeholder="Pega aquí la letra si quieres que aparezca en el reproductor"></textarea></div>
+            <button class="collab-submit" id="collab-submit-button" type="submit">Enviar canción para revisión</button>
+        </form>
+        <div class="collab-status-list" id="collab-my-submissions"><p class="chat-empty" id="collab-my-label">Tus propuestas aparecerán aquí.</p></div>
+        <div class="collab-admin-panel" id="collab-admin-panel" hidden><h3 id="collab-admin-title">Propuestas pendientes de revisión</h3><div id="collab-review-list"></div></div>
+    </section>
+
     <button id="scroll-top-btn" class="scroll-top-btn" onclick="scrollToTop()">
-        <i class="fa-solid fa-arrow-up"></i> Arriba
+        <i class="fa-solid fa-arrow-up"></i> <span data-i18n="top">Arriba</span>
     </button>
 
     <button class="admin-trigger" onclick="checkAdminPassword()">
@@ -596,10 +681,10 @@
     <div class="modal" id="about-modal">
         <div class="modal-content about-modal-content">
             <button class="close-modal" onclick="closeModal('about-modal')">&times;</button>
-            <h2>Sobre AtlasIKA</h2>
-            <p>Somos <strong>dos amigos con una misma obsesión: la música.</strong> Si has acabado en este rincón de la red, lo más probable es que compartas esa misma pasión con nosotros.</p>
-            <p>Disfrutamos componiendo, produciendo y dando forma a nuestras canciones aprovechando al máximo las herramientas de hoy en día. Sin grandes sellos, sin trampa ni cartón.</p>
-            <p style="color: var(--accent-primary); font-weight: 700; margin-top: 1.5rem;">Sin publicidad y sin interrupciones... Solo pura pasión por la música.</p>
+            <h2 data-i18n="aboutTitle">Sobre AtlasIKA</h2>
+            <p data-i18n="aboutP1">Somos <strong>dos amigos con una misma obsesión: la música.</strong> Si has acabado en este rincón de la red, lo más probable es que compartas esa misma pasión con nosotros.</p>
+            <p data-i18n="aboutP2">Disfrutamos componiendo, produciendo y dando forma a nuestras canciones aprovechando al máximo las herramientas de hoy en día. Sin grandes sellos, sin trampa ni cartón.</p>
+            <p data-i18n="aboutP3" style="color: var(--accent-primary); font-weight: 700; margin-top: 1.5rem;">Sin publicidad y sin interrupciones... Solo pura pasión por la música.</p>
         </div>
     </div>
 
@@ -607,14 +692,14 @@
     <div class="modal" id="admin-modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('admin-modal')">&times;</button>
-            <h2 id="admin-modal-title">Gestión del Catálogo</h2>
+            <h2 id="admin-modal-title" data-i18n="catalogManagement">Gestión del Catálogo</h2>
 
             <div class="admin-mode-selector">
                 <button type="button" class="admin-tab-btn active" id="tab-add-btn" onclick="setAdminMode('add')">
-                    <i class="fa-solid fa-plus"></i> Añadir Nueva
+                    <i class="fa-solid fa-plus"></i> <span data-i18n="addNew">Añadir Nueva</span>
                 </button>
                 <button type="button" class="admin-tab-btn" id="tab-edit-btn" onclick="setAdminMode('edit')">
-                    <i class="fa-solid fa-pen-to-square"></i> Modificar
+                    <i class="fa-solid fa-pen-to-square"></i> <span data-i18n="edit">Modificar</span>
                 </button>
             </div>
 
@@ -622,27 +707,27 @@
                 <input type="hidden" id="edit-song-id" value="">
 
                 <div class="form-group" id="song-select-group" style="display: none;">
-                    <label>Selecciona la canción a modificar</label>
+                    <label data-i18n="selectSongToEdit">Selecciona la canción a modificar</label>
                     <select id="edit-song-select" onchange="loadSelectedSongToForm()">
-                        <option value="">-- Elige un tema --</option>
+                        <option value="" data-i18n="chooseTrack">-- Elige un tema --</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Título de la canción</label>
+                    <label data-i18n="songTitle">Título de la canción</label>
                     <input type="text" id="song-title" required placeholder="Ej: Donde Arde el Sur">
                 </div>
                 <div class="form-group">
-                    <label>Artista / Intérprete</label>
+                    <label data-i18n="artist">Artista / Intérprete</label>
                     <input type="text" id="song-artist-input" maxlength="120" value="AtlasIKA" placeholder="AtlasIKA">
-                    <small style="color:var(--text-muted);">AtlasIKA para nuestras canciones; artista original para canciones externas.</small>
+                    <small style="color:var(--text-muted);" data-i18n="artistHelp">AtlasIKA para nuestras canciones; artista original para canciones externas.</small>
                 </div>
                 <div class="form-group">
-                    <label>País (incluye la bandera si quieres, por ejemplo 🇬🇷 Greece)</label>
+                    <label data-i18n="country">País (incluye la bandera si quieres, por ejemplo 🇬🇷 Greece)</label>
                     <input type="text" id="song-country-input" maxlength="80" placeholder="🇬🇷 Greece">
                 </div>
                 <div class="form-group">
-                    <label>Idioma</label>
+                    <label data-i18n="songLanguage">Idioma</label>
                     <select id="song-lang-input" required>
                         <option value="Español">Español</option>
                         <option value="Inglés">Inglés</option>
@@ -654,7 +739,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Estilo / Género</label>
+                    <label data-i18n="styleGenre">Estilo / Género</label>
                     <select id="song-style-input" required>
                         <option value="Pop">Pop</option>
                         <option value="Rock">Rock</option>
@@ -664,24 +749,35 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>URL de la Portada</label>
+                    <label data-i18n="shortDescription">Descripción corta</label>
+                    <textarea id="song-description-input" maxlength="500" rows="3" placeholder="Describe brevemente esta canción..." data-i18n-placeholder="descriptionPlaceholder" style="width:100%;padding:.8rem;border-radius:10px;border:1px solid var(--border-color);background:#0a0b10;color:#fff;outline:none;font-size:.95rem;resize:vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="song-lyrics-input" id="song-lyrics-label">Letra de la canción</label>
+                    <textarea id="song-lyrics-input" maxlength="12000" rows="8" placeholder="Pega aquí la letra de la canción..." style="width:100%;padding:.8rem;border-radius:10px;border:1px solid var(--border-color);background:#0a0b10;color:#fff;outline:none;font-size:.95rem;resize:vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="coverUrl">URL de la Portada</label>
                     <input type="url" id="song-cover" placeholder="https://...">
                 </div>
                 <div class="form-group">
-                    <label>URL de la canción (MP3 o Suno)</label>
+                    <label data-i18n="songUrl">URL de la canción (MP3 o Suno)</label>
                     <input type="url" id="song-audio" required placeholder="https://suno.com/song/... o URL MP3">
                 </div>
-                <button type="submit" class="submit-btn" id="form-submit-btn">Guardar Canción</button>
+                <button type="submit" class="submit-btn" id="form-submit-btn" data-i18n="saveSong">Guardar Canción</button>
             </form>
         </div>
     </div>
 
-    <div class="toast-notification" id="toast">¡Enlace copiado al portapapeles!</div>
+    <div class="toast-notification" id="toast" data-i18n="linkCopied">¡Enlace copiado al portapapeles!</div>
 
     <script>
         const SUPABASE_URL = 'https://efcfbcmcjsbmhqcdmfqk.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_4BUGnEZLhLR4BGJbDG-E3g_w08Ux2ap';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Cliente independiente para autenticación anónima, chat y propuestas.
+        // Así no cambiamos el rol de la sesión pública que usa el reproductor y el catálogo.
+        const chatSupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { storageKey: 'atlasika-chat-auth-token', persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } });
 
         let isAdmin = false;
         let adminMode = 'add';
@@ -696,6 +792,54 @@
         let isAutoChainActive = true;
         let isListView = true;
         let songsCache = [];
+        let interfaceLanguage = localStorage.getItem('atlasika_interface_language') || 'es';
+        let chatUser = null;
+        let chatChannel = null;
+        let isChatAdmin = false;
+        let chatMessagesCache = [];
+        let chatOnlineCount = 0;
+        let chatReady = false;
+        let chatRefreshTimer = null;
+
+        const translations = {
+            es: {connecting:'Conectando con Supabase…',aboutButton:'Sobre AtlasIKA',contact:'Contacto',explore:'Explora el atlas musical',allCountries:'-- Todos los países --',chooseLanguage:'-- Elige Idioma --',chooseStyle:'-- Elige Estilo --',clearFilter:'Limpiar filtro',searchSong:'Buscar canción...',liveConsole:'Consola en Directo',sunoPlayer:'Reproductor Suno',atlasPlayer:'Reproductor AtlasIKA',playingStatus:'Reproduciendo',pausedStatus:'En pausa',selectSong:'Selecciona una canción para empezar',previous:'Anterior',play:'Reproducir',pause:'Pausa',next:'Siguiente',radio:'Al terminar',endNext:'Siguiente canción',endRepeat:'Repetir canción',random:'Aleatorio',all:'Todas',newReleases:'Novedades',grid:'Cuadrícula',list:'Lista',top:'Arriba',aboutTitle:'Sobre AtlasIKA',aboutP1:'Somos dos amigos con una misma obsesión: la música. Si has acabado en este rincón de la red, lo más probable es que compartas esa misma pasión con nosotros.',aboutP2:'Disfrutamos componiendo, produciendo y dando forma a nuestras canciones aprovechando al máximo las herramientas de hoy en día. Sin grandes sellos, sin trampa ni cartón.',aboutP3:'Sin publicidad y sin interrupciones... Solo pura pasión por la música.',catalogManagement:'Gestión del Catálogo',addNew:'Añadir Nueva',edit:'Modificar',selectSongToEdit:'Selecciona la canción a modificar',chooseTrack:'-- Elige un tema --',songTitle:'Título de la canción',artist:'Artista / Intérprete',artistHelp:'AtlasIKA para nuestras canciones; artista original para canciones externas.',country:'País',songLanguage:'Idioma de la canción',styleGenre:'Estilo / Género',shortDescription:'Descripción corta',descriptionPlaceholder:'Describe brevemente esta canción...',coverUrl:'URL de la Portada',songUrl:'URL de la canción (MP3 o Suno)',saveSong:'Guardar Canción',linkCopied:'¡Enlace copiado al portapapeles!',noSongs:'No se encontraron canciones para esta selección.',playing:'SONANDO',new:'NUEVO',untitled:'Sin título',views:'reproducciones',suno:'Suno',audio:'Audio',comments:'Comentarios',songComments:'Comentarios de esta canción',aliasPlaceholder:'Tu alias (máx. 25 caracteres)',commentPlaceholder:'Escribe tu comentario (máx. 500 caracteres)',publishComment:'Publicar comentario',loadingComments:'Cargando comentarios…',noComments:'Todavía no hay comentarios. ¡Sé el primero!',commentLoadError:'No se pudieron cargar los comentarios. Comprueba la configuración de comentarios en Supabase.',playNow:'Reproducir',showDetails:'Mostrar detalles',adminActive:'Admin (Activo)',adminPassword:'Contraseña de administración:',wrongPassword:'Contraseña incorrecta.',saveNewSong:'Guardar Nueva Canción',updateSong:'Actualizar Canción',chooseTrackEdit:'-- Elige un tema a modificar --',selectTrackEdit:'Selecciona una canción de la lista para editar.',songAdded:'¡Canción añadida con éxito!',songUpdated:'¡Canción actualizada con éxito!',deleteConfirm:'¿Seguro que deseas eliminar esta canción?',commentPublished:'Comentario publicado. ¡Gracias por participar!',waitComment:'Espera 30 segundos antes de publicar otro comentario.',duplicateComment:'No puedes publicar dos comentarios consecutivos iguales.',commentFailed:'No se pudo publicar el comentario. ',viewsLabel:'reproducciones'},
+            en: {connecting:'Connecting to Supabase…',aboutButton:'About AtlasIKA',contact:'Contact',explore:'Explore the musical atlas',allCountries:'-- All countries --',chooseLanguage:'-- Choose language --',chooseStyle:'-- Choose style --',clearFilter:'Clear filter',searchSong:'Search songs...',liveConsole:'Live Console',sunoPlayer:'Suno Player',atlasPlayer:'AtlasIKA Player',playingStatus:'Playing',pausedStatus:'Paused',selectSong:'Select a song to get started',previous:'Previous',play:'Play',pause:'Pause',next:'Next',radio:'When finished',endNext:'Play next song',endRepeat:'Repeat current song',random:'Shuffle',all:'All',newReleases:'New releases',grid:'Grid',list:'List',top:'Top',aboutTitle:'About AtlasIKA',aboutP1:'We are two friends with one shared obsession: music. If you have found this corner of the web, you probably share that same passion.',aboutP2:'We enjoy composing, producing and shaping our songs using the tools available today. No major labels, no tricks.',aboutP3:'No ads and no interruptions... Just pure passion for music.',catalogManagement:'Catalog Management',addNew:'Add New',edit:'Edit',selectSongToEdit:'Select the song to edit',chooseTrack:'-- Choose a track --',songTitle:'Song title',artist:'Artist / Performer',artistHelp:'AtlasIKA for our songs; original artist for external songs.',country:'Country',songLanguage:'Song language',styleGenre:'Style / Genre',shortDescription:'Short description',descriptionPlaceholder:'Briefly describe this song...',coverUrl:'Cover URL',songUrl:'Song URL (MP3 or Suno)',saveSong:'Save Song',linkCopied:'Link copied to clipboard!',noSongs:'No songs found for this selection.',playing:'NOW PLAYING',new:'NEW',untitled:'Untitled',views:'plays',suno:'Suno',audio:'Audio',comments:'Comments',songComments:'Comments for this song',aliasPlaceholder:'Your name (max. 25 characters)',commentPlaceholder:'Write your comment (max. 500 characters)',publishComment:'Post comment',loadingComments:'Loading comments…',noComments:'No comments yet. Be the first!',commentLoadError:'Could not load comments. Check the comments setup in Supabase.',playNow:'Play',showDetails:'Show details',adminActive:'Admin (Active)',adminPassword:'Admin password:',wrongPassword:'Incorrect password.',saveNewSong:'Save New Song',updateSong:'Update Song',chooseTrackEdit:'-- Choose a song to edit --',selectTrackEdit:'Select a song from the list to edit.',songAdded:'Song added successfully!',songUpdated:'Song updated successfully!',deleteConfirm:'Are you sure you want to delete this song?',commentPublished:'Comment posted. Thanks for participating!',waitComment:'Please wait 30 seconds before posting another comment.',duplicateComment:'You cannot post the same comment twice in a row.',commentFailed:'Could not post the comment. ',viewsLabel:'plays'},
+            tr: {connecting:'Supabase bağlantısı kuruluyor…',aboutButton:'AtlasIKA Hakkında',contact:'İletişim',explore:'Müzik atlasını keşfet',allCountries:'-- Tüm ülkeler --',chooseLanguage:'-- Dil seçin --',chooseStyle:'-- Tarz seçin --',clearFilter:'Filtreyi temizle',searchSong:'Şarkı ara...',liveConsole:'Canlı Konsol',sunoPlayer:'Suno Oynatıcı',atlasPlayer:'AtlasIKA Oynatıcı',playingStatus:'Çalıyor',pausedStatus:'Duraklatıldı',selectSong:'Başlamak için bir şarkı seçin',previous:'Önceki',play:'Oynat',pause:'Duraklat',next:'Sonraki',radio:'Bittiğinde',endNext:'Sonraki şarkı',endRepeat:'Bu şarkıyı tekrarla',random:'Karışık',all:'Tümü',newReleases:'Yeni çıkanlar',grid:'Izgara',list:'Liste',top:'Yukarı',aboutTitle:'AtlasIKA Hakkında',aboutP1:'Biz müzik tutkusu etrafında birleşmiş iki arkadaşız. Bu web köşesini bulduysanız, muhtemelen aynı tutkuyu paylaşıyorsunuz.',aboutP2:'Bugünün araçlarından yararlanarak şarkılar besteliyor, üretiyor ve şekillendiriyoruz. Büyük plak şirketleri yok, hile yok.',aboutP3:'Reklam yok, kesinti yok... Sadece müziğe saf bir tutku.',catalogManagement:'Katalog Yönetimi',addNew:'Yeni Ekle',edit:'Düzenle',selectSongToEdit:'Düzenlenecek şarkıyı seçin',chooseTrack:'-- Bir parça seçin --',songTitle:'Şarkı başlığı',artist:'Sanatçı / Yorumcu',artistHelp:'Kendi şarkılarımız için AtlasIKA; diğer şarkılar için orijinal sanatçı.',country:'Ülke',songLanguage:'Şarkı dili',styleGenre:'Tarz / Tür',shortDescription:'Kısa açıklama',descriptionPlaceholder:'Bu şarkıyı kısaca açıklayın...',coverUrl:'Kapak URL’si',songUrl:'Şarkı URL’si (MP3 veya Suno)',saveSong:'Şarkıyı Kaydet',linkCopied:'Bağlantı panoya kopyalandı!',noSongs:'Bu seçim için şarkı bulunamadı.',playing:'ÇALIYOR',new:'YENİ',untitled:'Başlıksız',views:'dinlenme',suno:'Suno',audio:'Ses',comments:'Yorumlar',songComments:'Bu şarkının yorumları',aliasPlaceholder:'Adınız (en fazla 25 karakter)',commentPlaceholder:'Yorumunuzu yazın (en fazla 500 karakter)',publishComment:'Yorum gönder',loadingComments:'Yorumlar yükleniyor…',noComments:'Henüz yorum yok. İlk siz olun!',commentLoadError:'Yorumlar yüklenemedi. Supabase yorum ayarlarını kontrol edin.',playNow:'Oynat',showDetails:'Ayrıntıları göster',adminActive:'Admin (Aktif)',adminPassword:'Yönetici şifresi:',wrongPassword:'Hatalı şifre.',saveNewSong:'Yeni Şarkıyı Kaydet',updateSong:'Şarkıyı Güncelle',chooseTrackEdit:'-- Düzenlenecek şarkıyı seçin --',selectTrackEdit:'Düzenlemek için listeden bir şarkı seçin.',songAdded:'Şarkı başarıyla eklendi!',songUpdated:'Şarkı başarıyla güncellendi!',deleteConfirm:'Bu şarkıyı silmek istediğinizden emin misiniz?',commentPublished:'Yorum yayınlandı. Katıldığınız için teşekkürler!',waitComment:'Yeni yorum göndermeden önce 30 saniye bekleyin.',duplicateComment:'Aynı yorumu art arda gönderemezsiniz.',commentFailed:'Yorum gönderilemedi. ',viewsLabel:'dinlenme'}
+        };
+
+        function t(key) { return (translations[interfaceLanguage] || translations.es)[key] || translations.es[key] || key; }
+        const extraUiText={
+            es:{showLyrics:'Ver letra',hideLyrics:'Ocultar letra',lyricsAvailable:'Letra disponible',collabTitle:'Comparte tu canción',collabIntro:'¿Eres creador en Suno? Envía tu canción a AtlasIKA. Tu propuesta quedará pendiente y solo se publicará cuando el administrador la apruebe.',collabNickname:'Tu nombre artístico',collabSongTitle:'Título de la canción',collabCountry:'País',collabLanguage:'Idioma',collabStyle:'Estilo musical',collabUrl:'Enlace de Suno',collabCover:'Enlace de portada (opcional)',collabDescription:'Descripción breve (opcional)',collabLyrics:'Letra (opcional)',collabSend:'Enviar canción para revisión',collabMy:'Tus propuestas aparecerán aquí.',collabAdmin:'Propuestas pendientes de revisión',collabPending:'Pendiente',collabApproved:'Aprobada',collabRejected:'Rechazada',collabSent:'Tu canción se ha enviado. Queda pendiente de aprobación.',collabBadUrl:'Introduce un enlace válido de Suno (suno.com/song/...).',collabError:'No se pudo enviar la propuesta: ',collabApprove:'Aprobar',collabReject:'Rechazar',collabNoPending:'No hay propuestas pendientes.',collabReviewError:'No se pudo actualizar la propuesta: ',collabReviewConfirm:'¿Seguro que quieres ',collabApproveVerb:'aprobar',collabRejectVerb:'rechazar',lyricsLabel:'Letra de la canción'},
+            en:{showLyrics:'Show lyrics',hideLyrics:'Hide lyrics',lyricsAvailable:'Lyrics available',collabTitle:'Share your song',collabIntro:'Are you a Suno creator? Submit your song to AtlasIKA. It will remain pending until an administrator approves it.',collabNickname:'Artist name',collabSongTitle:'Song title',collabCountry:'Country',collabLanguage:'Language',collabStyle:'Music style',collabUrl:'Suno link',collabCover:'Cover image URL (optional)',collabDescription:'Short description (optional)',collabLyrics:'Lyrics (optional)',collabSend:'Submit song for review',collabMy:'Your submissions will appear here.',collabAdmin:'Submissions awaiting review',collabPending:'Pending',collabApproved:'Approved',collabRejected:'Rejected',collabSent:'Your song was submitted and is awaiting approval.',collabBadUrl:'Enter a valid Suno link (suno.com/song/...).',collabError:'Could not submit: ',collabApprove:'Approve',collabReject:'Reject',collabNoPending:'There are no pending submissions.',collabReviewError:'Could not update submission: ',collabReviewConfirm:'Are you sure you want to ',collabApproveVerb:'approve',collabRejectVerb:'reject',lyricsLabel:'Song lyrics'},
+            tr:{showLyrics:'Şarkı sözlerini göster',hideLyrics:'Şarkı sözlerini gizle',lyricsAvailable:'Şarkı sözleri mevcut',collabTitle:'Şarkını paylaş',collabIntro:'Suno’da içerik üretiyor musun? Şarkını AtlasIKA’ya gönder. Yönetici onaylayana kadar beklemede kalır.',collabNickname:'Sanatçı adı',collabSongTitle:'Şarkı başlığı',collabCountry:'Ülke',collabLanguage:'Dil',collabStyle:'Müzik tarzı',collabUrl:'Suno bağlantısı',collabCover:'Kapak görseli bağlantısı (isteğe bağlı)',collabDescription:'Kısa açıklama (isteğe bağlı)',collabLyrics:'Şarkı sözleri (isteğe bağlı)',collabSend:'Onay için gönder',collabMy:'Gönderilerin burada görünecek.',collabAdmin:'İnceleme bekleyen gönderiler',collabPending:'Beklemede',collabApproved:'Onaylandı',collabRejected:'Reddedildi',collabSent:'Şarkın gönderildi ve onay bekliyor.',collabBadUrl:'Geçerli bir Suno bağlantısı gir (suno.com/song/...).',collabError:'Gönderilemedi: ',collabApprove:'Onayla',collabReject:'Reddet',collabNoPending:'Bekleyen gönderi yok.',collabReviewError:'Gönderi güncellenemedi: ',collabReviewConfirm:'Şunu ',collabApproveVerb:'onaylamak',collabRejectVerb:'reddetmek',lyricsLabel:'Şarkı sözleri'}
+        };
+        function extraText(key){return (extraUiText[interfaceLanguage]||extraUiText.es)[key]||extraUiText.es[key]||key;}
+        function applyExtraUiLanguage(){
+            const map={ 'collab-title':'collabTitle','collab-intro':'collabIntro','collab-label-nickname':'collabNickname','collab-label-title':'collabSongTitle','collab-label-country':'collabCountry','collab-label-language':'collabLanguage','collab-label-style':'collabStyle','collab-label-url':'collabUrl','collab-label-cover':'collabCover','collab-label-description':'collabDescription','collab-label-lyrics':'collabLyrics','collab-submit-button':'collabSend','collab-my-label':'collabMy','collab-admin-title':'collabAdmin','song-lyrics-label':'lyricsLabel'};
+            Object.entries(map).forEach(([id,key])=>{const el=document.getElementById(id);if(el)el.textContent=extraText(key);});
+            const lyricsButton=document.getElementById('lyrics-toggle-label');if(lyricsButton){const panel=document.getElementById('current-lyrics-panel');lyricsButton.textContent=panel&&panel.style.display==='block'?extraText('hideLyrics'):extraText('showLyrics');}
+            renderMyCollaboratorSubmissions();
+            if(isChatAdmin)loadCollaboratorReviewQueue();
+        }
+        function applyInterfaceLanguage() {
+            document.documentElement.lang = interfaceLanguage;
+            document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (translations[interfaceLanguage]?.[key]) el.textContent = t(key); });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { const key = el.getAttribute('data-i18n-placeholder'); el.placeholder = t(key); });
+            document.querySelectorAll('[data-i18n-title]').forEach(el => { const key = el.getAttribute('data-i18n-title'); el.title = t(key); });
+            const countrySelect = document.getElementById('select-country'); if (countrySelect?.options[0]) countrySelect.options[0].textContent = t('allCountries');
+            const languageSelect = document.getElementById('select-language'); if (languageSelect?.options[0]) languageSelect.options[0].textContent = t('chooseLanguage');
+            const styleSelect = document.getElementById('select-style'); if (styleSelect?.options[0]) styleSelect.options[0].textContent = t('chooseStyle');
+            const editSelect = document.getElementById('edit-song-select'); if (editSelect?.options[0]) editSelect.options[0].textContent = t('chooseTrackEdit');
+            const optionLabels = { 'Español': {es:'Español',en:'Spanish',tr:'İspanyolca'}, 'Inglés': {es:'Inglés',en:'English',tr:'İngilizce'}, 'Francés': {es:'Francés',en:'French',tr:'Fransızca'}, 'Italiano': {es:'Italiano',en:'Italian',tr:'İtalyanca'}, 'Griego': {es:'Griego',en:'Greek',tr:'Yunanca'}, 'Turco': {es:'Turco',en:'Turkish',tr:'Türkçe'}, 'Ruso': {es:'Ruso',en:'Russian',tr:'Rusça'}, 'Baladas': {es:'Baladas',en:'Ballads',tr:'Balad'} };
+            document.querySelectorAll('#select-language option, #song-lang-input option, #select-style option, #song-style-input option').forEach(option => { const labels = optionLabels[option.value]; if (labels) option.textContent = labels[interfaceLanguage] || labels.es; });
+            const adminBtn = document.getElementById('admin-btn-text'); if (adminBtn) adminBtn.textContent = isAdmin ? t('adminActive') : 'Admin';
+            const radioBtn = document.getElementById('auto-chain-btn'); if (radioBtn) radioBtn.innerHTML = `<i class=\"fa-solid ${isAutoChainActive ? 'fa-forward-step' : 'fa-repeat'}\"></i> ${t('radio')}: <span id=\"end-mode-label\">${t(isAutoChainActive ? 'endNext' : 'endRepeat')}</span>`;
+            const shuffleBtn = document.getElementById('shuffle-btn'); if (shuffleBtn) shuffleBtn.innerHTML = `<i class=\"fa-solid fa-shuffle\"></i> ${t('random')}: ${isShuffleActive ? 'ON' : 'OFF'}`;
+            if (document.getElementById('form-submit-btn')) document.getElementById('form-submit-btn').textContent = adminMode === 'add' ? t('saveNewSong') : t('updateSong');
+            if (document.getElementById('play-pause-btn') && !getSunoSongId((getFilteredSongs()[currentTrackIndex] || {}).audio_url)) { const playing = !audioElement.paused && !!audioElement.src; document.getElementById('play-pause-btn').innerHTML = `<i class=\"fa-solid ${playing ? 'fa-pause' : 'fa-play'}\"></i> ${playing ? t('pause') : t('play')}`; }
+            renderApp();
+        }
+        function changeInterfaceLanguage(lang) { interfaceLanguage = translations[lang] ? lang : 'es'; localStorage.setItem('atlasika_interface_language', interfaceLanguage); applyInterfaceLanguage(); applyChatLanguage(); applyExtraUiLanguage(); }
 
         const audioElement = document.getElementById('audio-element');
         const playPauseBtn = document.getElementById('play-pause-btn');
@@ -753,10 +897,17 @@
             const timeInfo = document.querySelector('.time-info');
 
             document.getElementById('current-song-title').innerText = song.title;
+            const lyricsPanel = document.getElementById('current-lyrics-panel');
+            const lyricsButton = document.getElementById('lyrics-toggle-btn');
+            lyricsPanel.textContent = song.lyrics || '';
+            lyricsPanel.style.display = 'none';
+            lyricsButton.style.display = song.lyrics && song.lyrics.trim() ? 'inline-flex' : 'none';
+            document.getElementById('lyrics-toggle-label').textContent = extraText('showLyrics');
             document.getElementById('current-song-genre').innerText = song.genre;
             document.getElementById('console-cover-img').src = song.cover_url || 'https://via.placeholder.com/90/111/00f0ff?text=AtlasIKA';
 
             audioElement.pause();
+            audioElement.loop = !isAutoChainActive;
             if (sunoId) {
                 audioElement.removeAttribute('src');
                 audioElement.load();
@@ -765,7 +916,7 @@
                 progressContainer.style.display = 'none';
                 if (timeInfo) timeInfo.style.display = 'none';
                 playPauseBtn.style.display = 'none';
-                document.getElementById('current-status-text').innerText = 'Reproductor Suno';
+                document.getElementById('current-status-text').innerText = t('sunoPlayer');
                 eqContainer.classList.remove('playing-active');
             } else {
                 sunoFrame.innerHTML = '';
@@ -777,7 +928,7 @@
                 timeCurrent.innerText = '0:00';
                 timeTotal.innerText = '0:00';
                 audioElement.src = song.audio_url || '';
-                document.getElementById('current-status-text').innerText = 'Reproductor AtlasIKA';
+                document.getElementById('current-status-text').innerText = t('atlasPlayer');
             }
 
             updateMediaSession(song);
@@ -804,6 +955,22 @@
 
             document.title = `🎵 ${song.title} - AtlasIKA`;
             renderApp();
+        }
+
+        function playSongById(songId) {
+            const songs = getFilteredSongs();
+            const index = songs.findIndex(song => String(song.id) === String(songId));
+            if (index < 0) return;
+            loadSongToPlayer(index, true);
+        }
+
+        function toggleCurrentLyrics(){
+            const panel=document.getElementById('current-lyrics-panel');
+            const button=document.getElementById('lyrics-toggle-btn');
+            const opening=panel.style.display==='none'||!panel.style.display;
+            panel.style.display=opening?'block':'none';
+            document.getElementById('lyrics-toggle-label').textContent=extraText(opening?'hideLyrics':'showLyrics');
+            button.setAttribute('aria-expanded',opening?'true':'false');
         }
 
         /* INTEGRACIÓN CON MEDIASESSION (CONTROLES BLUETOOTH / AURICULARES / NOTIFICACIONES) */
@@ -864,7 +1031,8 @@
             if (isAutoChainActive) {
                 nextSong();
             } else {
-                updatePlayButtonState(false);
+                audioElement.currentTime = 0;
+                audioElement.play().then(() => updatePlayButtonState(true)).catch(() => updatePlayButtonState(false));
             }
         });
 
@@ -882,14 +1050,14 @@
 
         function updatePlayButtonState(isPlaying) {
             if (isPlaying) {
-                playPauseBtn.innerHTML = `<i class="fa-solid fa-pause"></i> Pausa`;
+                playPauseBtn.innerHTML = `<i class="fa-solid fa-pause"></i> ${t('pause')}`;
                 eqContainer.classList.add('playing-active');
-                document.getElementById('current-status-text').innerText = "Reproduciendo";
+                document.getElementById('current-status-text').innerText = t("playingStatus");
                 if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "playing";
             } else {
-                playPauseBtn.innerHTML = `<i class="fa-solid fa-play"></i> Reproducir`;
+                playPauseBtn.innerHTML = `<i class="fa-solid fa-play"></i> ${t('play')}`;
                 eqContainer.classList.remove('playing-active');
-                document.getElementById('current-status-text').innerText = "En pausa";
+                document.getElementById('current-status-text').innerText = t("pausedStatus");
                 if ('mediaSession' in navigator) navigator.mediaSession.playbackState = "paused";
             }
         }
@@ -897,6 +1065,12 @@
         function nextSong() {
             const songs = getFilteredSongs();
             if (songs.length === 0) return;
+            // If the active filters leave only one track, do not reload it as if it were the next song.
+            if (songs.length === 1) {
+                audioElement.pause();
+                updatePlayButtonState(false);
+                return;
+            }
             if (isShuffleActive) {
                 const randomIndex = Math.floor(Math.random() * songs.length);
                 loadSongToPlayer(randomIndex);
@@ -914,17 +1088,20 @@
         }
 
         function toggleAutoChain() {
+            // ON = advance to the next track; OFF = repeat the current MP3 track.
             isAutoChainActive = !isAutoChainActive;
+            audioElement.loop = !isAutoChainActive;
             const btn = document.getElementById('auto-chain-btn');
             btn.classList.toggle('active-mode', isAutoChainActive);
-            btn.innerHTML = `<i class="fa-solid fa-radio"></i> Radio: ${isAutoChainActive ? 'ON' : 'OFF'}`;
+            btn.innerHTML = `<i class="fa-solid ${isAutoChainActive ? 'fa-forward-step' : 'fa-repeat'}"></i> ${t('radio')}: <span id="end-mode-label">${t(isAutoChainActive ? 'endNext' : 'endRepeat')}</span>`;
+            btn.title = t(isAutoChainActive ? 'endNext' : 'endRepeat');
         }
 
         function toggleShuffle() {
             isShuffleActive = !isShuffleActive;
             const btn = document.getElementById('shuffle-btn');
             btn.classList.toggle('active-mode', isShuffleActive);
-            btn.innerHTML = `<i class="fa-solid fa-shuffle"></i> Random: ${isShuffleActive ? 'ON' : 'OFF'}`;
+            btn.innerHTML = `<i class="fa-solid fa-shuffle"></i> ${t('random')}: ${isShuffleActive ? 'ON' : 'OFF'}`;
         }
 
 
@@ -934,7 +1111,7 @@
             const previous = selectedCountry;
             const countries = [...new Set(songsCache.map(s => (s.country || '').trim()).filter(Boolean))]
                 .sort((a, b) => a.localeCompare(b, 'en'));
-            select.innerHTML = '<option value="">-- Todos los países --</option>';
+            select.innerHTML = `<option value="">${escapeHtml(t('allCountries'))}</option>`;
             countries.forEach(country => {
                 const option = document.createElement('option');
                 option.value = country;
@@ -1100,7 +1277,7 @@
 
         async function loadSongComments(songId) {
             const list = document.getElementById(`comment-list-${songId}`);
-            list.innerHTML = '<p class="comment-empty">Cargando comentarios…</p>';
+            list.innerHTML = `<p class="comment-empty">${escapeHtml(t('loadingComments'))}</p>`;
             const { data, error } = await supabaseClient
                 .from('song_comments')
                 .select('id, song_id, alias, message, created_at')
@@ -1108,12 +1285,12 @@
                 .order('created_at', { ascending: false })
                 .limit(50);
             if (error) {
-                list.innerHTML = '<p class="comment-empty">No se pudieron cargar los comentarios. Comprueba la configuración de comentarios en Supabase.</p>';
+                list.innerHTML = `<p class="comment-empty">${escapeHtml(t('commentLoadError'))}</p>`;
                 console.error('Comentarios:', error);
                 return;
             }
             if (!data || data.length === 0) {
-                list.innerHTML = '<p class="comment-empty">Todavía no hay comentarios. ¡Sé el primero!</p>';
+                list.innerHTML = `<p class="comment-empty">${escapeHtml(t('noComments'))}</p>`;
                 return;
             }
             list.innerHTML = data.map(c => {
@@ -1135,7 +1312,7 @@
             if (!alias || !message) return;
             const button = form.querySelector('button[type="submit"]');
             button.disabled = true;
-            button.textContent = 'Publicando…';
+            button.textContent = t('publishComment') + '…';
             try {
                 const { error } = await supabaseClient.rpc('atlasika_submit_comment', {
                     p_song_id: songId,
@@ -1146,15 +1323,15 @@
                 if (error) throw error;
                 form.reset();
                 await loadSongComments(songId);
-                alert('Comentario publicado. ¡Gracias por participar!');
+                alert(t('commentPublished'));
             } catch (error) {
                 const msg = String(error.message || '');
-                if (msg.includes('RATE_LIMIT')) alert('Espera 30 segundos antes de publicar otro comentario.');
-                else if (msg.includes('DUPLICATE')) alert('No puedes publicar dos comentarios consecutivos iguales.');
-                else alert('No se pudo publicar el comentario. ' + msg);
+                if (msg.includes('RATE_LIMIT')) alert(t('waitComment'));
+                else if (msg.includes('DUPLICATE')) alert(t('duplicateComment'));
+                else alert(t('commentFailed') + msg);
             } finally {
                 button.disabled = false;
-                button.textContent = 'Publicar comentario';
+                button.textContent = t('publishComment');
             }
         }
 
@@ -1162,8 +1339,10 @@
             const card = document.getElementById(`song-card-${songId}`);
             if (!card) return;
             const opening = !card.classList.contains('expanded');
-            document.querySelectorAll('.song-card.expanded').forEach(item => item.classList.remove('expanded'));
+            document.querySelectorAll('.song-card.expanded').forEach(item => { item.classList.remove('expanded'); const oldButton = item.querySelector('.song-summary-expand'); if (oldButton) oldButton.setAttribute('aria-expanded', 'false'); });
             if (opening) card.classList.add('expanded');
+            const expandButton = card.querySelector('.song-summary-expand');
+            if (expandButton) expandButton.setAttribute('aria-expanded', opening ? 'true' : 'false');
         }
 
         function renderApp() {
@@ -1172,7 +1351,7 @@
             const songs = getFilteredSongs();
 
             if (songs.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color:var(--text-muted);">No se encontraron canciones para esta selección.</p>`;
+                container.innerHTML = `<p style="text-align:center; color:var(--text-muted);">${escapeHtml(t('noSongs'))}</p>`;
                 return;
             }
 
@@ -1183,42 +1362,44 @@
                 card.className = `song-card ${isCurrentPlaying ? 'now-playing-card' : ''}`;
                 card.id = `song-card-${song.id}`;
                 card.innerHTML = `
-                    <button type="button" class="song-summary" onclick="toggleSongDetails(${song.id})" aria-expanded="false" aria-label="Mostrar detalles de ${escapeHtml(song.title || 'canción')}">
-                        <i class="fa-solid fa-music" style="color:var(--accent-primary);"></i>
-                        <span class="song-summary-title">${escapeHtml(song.title || 'Sin título')}</span>
+                    <div class="song-summary" onclick="if (!event.target.closest('button')) toggleSongDetails(${JSON.stringify(song.id)})">
+                        <button type="button" class="song-summary-play" onclick="event.stopPropagation(); playSongById(${JSON.stringify(song.id)})" aria-label="${escapeHtml(t('playNow'))}: ${escapeHtml(song.title || '')}" title="${escapeHtml(t('playNow'))}"><i class="fa-solid fa-play"></i></button>
+                        <span class="song-summary-title">${escapeHtml(song.title || t('untitled'))}</span>
                         <span class="song-summary-meta">${escapeHtml(song.artist || 'AtlasIKA')} · ${escapeHtml(song.country || '')}</span>
-                        ${isCurrentPlaying ? '<span class="now-playing-badge">SONANDO</span>' : ''}
-                        <i class="fa-solid fa-chevron-down expand-icon"></i>
-                    </button>
+                        ${isCurrentPlaying ? `<span class="now-playing-badge">${escapeHtml(t('playing'))}</span>` : ''}
+                        <button type="button" class="song-summary-expand" onclick="event.stopPropagation(); toggleSongDetails(${JSON.stringify(song.id)})" aria-expanded="false" aria-label="${escapeHtml(t('showDetails'))}: ${escapeHtml(song.title || '')}" title="${escapeHtml(t('showDetails'))}"><i class="fa-solid fa-chevron-down expand-icon"></i></button>
+                    </div>
                     <div class="song-details">
                         <div style="display:flex;align-items:center;gap:12px;padding-top:12px;">
-                            <div class="cover-container"><img src="${song.cover_url || 'https://via.placeholder.com/300/111/00f0ff?text=AtlasIKA'}" class="cover-img" alt="${escapeHtml(song.title || '')}"></div>
+                            <div class="cover-container"><img src="${escapeHtml(song.cover_url || 'https://via.placeholder.com/300/111/00f0ff?text=AtlasIKA')}" class="cover-img" alt="${escapeHtml(song.title || '')}"></div>
                             <div class="song-info">
                                 <div style="display:flex;gap:6px;align-items:center;margin-bottom:5px;flex-wrap:wrap;">
                                     <span class="song-genre">${escapeHtml(song.genre || '')}</span>
                                     ${song.country ? `<span class="country-chip">${escapeHtml(song.country)}</span>` : ''}
-                                    ${isNew && !isCurrentPlaying ? '<span class="new-badge">NUEVO</span>' : ''}
+                                    ${isNew && !isCurrentPlaying ? `<span class="new-badge">${escapeHtml(t('new'))}</span>` : ''}
                                 </div>
                                 <h3>${escapeHtml(song.title || '')}</h3>
-                                <div style="color:var(--text-muted);font-size:.82rem;margin:2px 0 6px;">${escapeHtml(song.artist || 'AtlasIKA')} · ${getSongPlatform(song) === 'suno' ? 'Suno' : 'Audio'}</div>
-                                <div class="song-stats-row"><span><i class="fa-solid fa-eye" style="color:var(--accent-primary);"></i> ${song.views || 0} reproducciones</span></div>
+                                <div style="color:var(--text-muted);font-size:.82rem;margin:2px 0 6px;">${escapeHtml(song.artist || 'AtlasIKA')} · ${getSongPlatform(song) === 'suno' ? t('suno') : t('audio')}</div>
+                                ${song.description ? `<p class="song-description">${escapeHtml(song.description)}</p>` : ''}
+                                ${song.lyrics ? `<span class="country-chip"><i class="fa-solid fa-align-left"></i> ${escapeHtml(extraText('lyricsAvailable'))}</span>` : ''}
+                                <div class="song-stats-row"><span><i class="fa-solid fa-eye" style="color:var(--accent-primary);"></i> ${song.views || 0} ${escapeHtml(t('views'))}</span></div>
                             </div>
                         </div>
                         <div class="song-actions-row">
-                            <button class="load-to-player-btn" onclick="loadSongToPlayer(${index})"><i class="fa-solid fa-play"></i> Reproducir</button>
-                            <button class="like-btn" onclick="likeSong(${song.id})"><i class="fa-solid fa-heart"></i> ${song.likes || 0}</button>
-                            <button class="share-btn" onclick="shareSong(${song.id})"><i class="fa-solid fa-share-nodes"></i></button>
-                            <button class="share-btn" onclick="toggleComments(${song.id})" title="Comentarios"><i class="fa-regular fa-comments"></i> Comentarios</button>
-                            ${isAdmin ? `<button class="close-modal" style="position:relative;top:0;right:0;color:#ff4757;font-size:1.2rem;" onclick="deleteSong(${song.id})">&times;</button>` : ''}
+                            <button class="load-to-player-btn" onclick="playSongById(${JSON.stringify(song.id)})"><i class="fa-solid fa-play"></i> ${escapeHtml(t('playNow'))}</button>
+                            <button class="like-btn" onclick="likeSong(${JSON.stringify(song.id)})"><i class="fa-solid fa-heart"></i> ${song.likes || 0}</button>
+                            <button class="share-btn" onclick="shareSong(${JSON.stringify(song.id)})" aria-label="Share"><i class="fa-solid fa-share-nodes"></i></button>
+                            <button class="share-btn" onclick="toggleComments(${JSON.stringify(song.id)})" title="${escapeHtml(t('comments'))}"><i class="fa-regular fa-comments"></i> ${escapeHtml(t('comments'))}</button>
+                            ${isAdmin ? `<button class="close-modal" style="position:relative;top:0;right:0;color:#ff4757;font-size:1.2rem;" onclick="deleteSong(${JSON.stringify(song.id)})">&times;</button>` : ''}
                         </div>
                         <section class="comments-panel" id="comments-${song.id}" style="display:none;">
-                            <h4><i class="fa-regular fa-comments"></i> Comentarios de esta canción</h4>
-                            <form class="comment-form" onsubmit="submitSongComment(event, ${song.id})">
-                                <input type="text" name="alias" maxlength="25" required placeholder="Tu alias (máx. 25 caracteres)">
-                                <textarea name="message" maxlength="500" required placeholder="Escribe tu comentario (máx. 500 caracteres)"></textarea>
-                                <button class="comment-submit" type="submit">Publicar comentario</button>
+                            <h4><i class="fa-regular fa-comments"></i> ${escapeHtml(t('songComments'))}</h4>
+                            <form class="comment-form" onsubmit="submitSongComment(event, ${JSON.stringify(song.id)})">
+                                <input type="text" name="alias" maxlength="25" required placeholder="${escapeHtml(t('aliasPlaceholder'))}">
+                                <textarea name="message" maxlength="500" required placeholder="${escapeHtml(t('commentPlaceholder'))}"></textarea>
+                                <button class="comment-submit" type="submit">${escapeHtml(t('publishComment'))}</button>
                             </form>
-                            <div class="comment-list" id="comment-list-${song.id}"><p class="comment-empty">Cargando comentarios…</p></div>
+                            <div class="comment-list" id="comment-list-${song.id}"><p class="comment-empty">${escapeHtml(t('loadingComments'))}</p></div>
                         </section>
                     </div>
                 `;
@@ -1238,19 +1419,214 @@
             });
         });
 
+
+        // CHAT: identidad anónima de Supabase Auth; el apodo no es una contraseña.
+        const chatCopy = {
+            es:{title:'Chat en directo',online:n=>`${n} en línea`,connecting:'Conectando…',nickname:'Tu apodo (máx. 25 caracteres)',enter:'Entrar al chat',message:'Escribe un mensaje…',send:'Enviar',note:'Puedes participar con un apodo, sin crear una cuenta. Respeta a los demás usuarios.',empty:'Todavía no hay mensajes. ¡Empieza la conversación!',edited:'editado',edit:'Editar',delete:'Eliminar',ban:'Bloquear',confirmDelete:'¿Eliminar este mensaje?',confirmBan:'¿Bloquear a este usuario? Ya no podrá enviar mensajes.',login:'Escribe un apodo para participar.',failed:'No se pudo conectar al chat. Comprueba la configuración SQL y que esté activado el acceso anónimo en Supabase.',banned:'Tu acceso al chat está bloqueado.',admin:'Moderación activada',uid:'Tu ID de administrador para registrar en Supabase:',saved:'Apodo guardado.'},
+            en:{title:'Live chat',online:n=>`${n} online`,connecting:'Connecting…',nickname:'Your nickname (max. 25 characters)',enter:'Join chat',message:'Write a message…',send:'Send',note:'Join with a nickname, no account registration required. Please respect other users.',empty:'No messages yet. Start the conversation!',edited:'edited',edit:'Edit',delete:'Delete',ban:'Block',confirmDelete:'Delete this message?',confirmBan:'Block this user? They will no longer be able to send messages.',login:'Enter a nickname to participate.',failed:'Could not connect to chat. Check the SQL setup and enable anonymous sign-ins in Supabase.',banned:'Your chat access is blocked.',admin:'Moderation enabled',uid:'Your admin ID to register in Supabase:',saved:'Nickname saved.'},
+            tr:{title:'Canlı sohbet',online:n=>`${n} çevrimiçi`,connecting:'Bağlanıyor…',nickname:'Takma adınız (en fazla 25 karakter)',enter:'Sohbete katıl',message:'Mesaj yazın…',send:'Gönder',note:'Hesap oluşturmadan bir takma adla katılabilirsiniz. Lütfen diğer kullanıcılara saygı gösterin.',empty:'Henüz mesaj yok. Sohbeti başlatın!',edited:'düzenlendi',edit:'Düzenle',delete:'Sil',ban:'Engelle',confirmDelete:'Bu mesaj silinsin mi?',confirmBan:'Bu kullanıcı engellensin mi? Artık mesaj gönderemez.',login:'Katılmak için bir takma ad yazın.',failed:'Sohbete bağlanılamadı. SQL ayarlarını kontrol edin ve Supabase anonim girişini etkinleştirin.',banned:'Sohbet erişiminiz engellendi.',admin:'Moderasyon etkin',uid:'Supabase’e kaydetmek için yönetici kimliğiniz:',saved:'Takma ad kaydedildi.'}
+        };
+        function ctext(key){return (chatCopy[interfaceLanguage]||chatCopy.es)[key]}
+        function applyChatLanguage(){
+            const d=chatCopy[interfaceLanguage]||chatCopy.es;
+            document.getElementById('chat-title').textContent=d.title;
+            document.getElementById('chat-online-count').textContent=chatReady?d.online(chatOnlineCount):d.connecting;
+            document.getElementById('chat-nickname').placeholder=d.nickname;
+            document.getElementById('chat-save-nickname').textContent=d.enter;
+            document.getElementById('chat-message-input').placeholder=d.message;
+            document.getElementById('chat-send-button').innerHTML=`${d.send} <i class="fa-solid fa-paper-plane"></i>`;
+            document.getElementById('chat-note').textContent=d.note;
+            renderChatMessages();
+            renderChatAdminTools();
+        }
+        async function initLiveChat(){
+            const nick=localStorage.getItem('atlasika_chat_nickname')||'';
+            document.getElementById('chat-nickname').value=nick;
+            try{
+                let {data:{session}}=await chatSupabaseClient.auth.getSession();
+                if(!session){
+                    const result=await chatSupabaseClient.auth.signInAnonymously();
+                    if(result.error) throw result.error;
+                    session=result.data.session;
+                }
+                chatUser=session.user;
+                const {data:ban}=await chatSupabaseClient.from('chat_bans').select('user_id').eq('user_id',chatUser.id).maybeSingle();
+                if(ban){document.getElementById('chat-message-input').disabled=true;document.getElementById('chat-send-button').disabled=true;document.getElementById('chat-note').textContent=ctext('banned');}
+                const adminCheck=await chatSupabaseClient.rpc('is_chat_admin');
+                isChatAdmin=!adminCheck.error && adminCheck.data===true;
+                await loadChatMessages();
+                await loadMyCollaboratorSubmissions();
+                if(isChatAdmin) await loadCollaboratorReviewQueue();
+                chatChannel=chatSupabaseClient.channel('atlasika-live-chat',{config:{presence:{key:chatUser.id}}})
+                    .on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},()=>loadChatMessages())
+                    .on('postgres_changes',{event:'*',schema:'public',table:'collaborator_submissions'},()=>{loadMyCollaboratorSubmissions();if(isChatAdmin)loadCollaboratorReviewQueue();})
+                    .on('presence',{event:'sync'},()=>{chatOnlineCount=Object.keys(chatChannel.presenceState()).length;applyChatLanguage();})
+                    .subscribe(async status=>{
+                        if(status==='SUBSCRIBED'){
+                            chatReady=true;
+                            await chatChannel.track({nickname:localStorage.getItem('atlasika_chat_nickname')||'Oyente',online_at:new Date().toISOString()});
+                            applyChatLanguage();
+                        }
+                    });
+                applyChatLanguage();
+            }catch(err){
+                console.error('AtlasIKA chat:',err);
+                document.getElementById('chat-messages').innerHTML=`<p class="chat-empty">${escapeHtml(ctext('failed'))}</p>`;
+                document.getElementById('chat-online-count').textContent='—';
+            }
+        }
+        async function loadChatMessages(){
+            const {data,error}=await chatSupabaseClient.from('chat_messages').select('id,user_id,nickname,message,created_at,updated_at').order('created_at',{ascending:true}).limit(100);
+            if(error){console.error('Chat messages:',error);return;}
+            chatMessagesCache=data||[];
+            renderChatMessages();
+        }
+        function saveChatNickname(){
+            const value=document.getElementById('chat-nickname').value.trim().slice(0,25);
+            if(!value){alert(ctext('login'));return;}
+            localStorage.setItem('atlasika_chat_nickname',value);
+            if(chatChannel&&chatReady)chatChannel.track({nickname:value,online_at:new Date().toISOString()});
+            document.getElementById('chat-note').textContent=ctext('saved');
+            renderChatAdminTools();
+        }
+        async function sendChatMessage(event){
+            event.preventDefault();
+            if(!chatUser){alert(ctext('failed'));return;}
+            const nickname=(localStorage.getItem('atlasika_chat_nickname')||'').trim();
+            const input=document.getElementById('chat-message-input');
+            const message=input.value.trim();
+            if(!nickname){alert(ctext('login'));document.getElementById('chat-nickname').focus();return;}
+            if(!message)return;
+            const {error}=await chatSupabaseClient.from('chat_messages').insert({user_id:chatUser.id,nickname,message});
+            if(error){console.error(error);alert(error.code==='42501'?ctext('banned'):'No se pudo enviar el mensaje: '+error.message);return;}
+            input.value='';
+            await loadChatMessages();
+        }
+        function renderChatMessages(){
+            const box=document.getElementById('chat-messages');if(!box)return;
+            if(!chatMessagesCache.length){box.innerHTML=`<p class="chat-empty">${escapeHtml(ctext('empty'))}</p>`;return;}
+            const wasNearBottom=box.scrollHeight-box.scrollTop-box.clientHeight<70;
+            box.innerHTML=chatMessagesCache.map(m=>{
+                const own=chatUser&&m.user_id===chatUser.id;
+                const date=new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+                const edited=new Date(m.updated_at).getTime()-new Date(m.created_at).getTime()>1000;
+                const actions=(own||isChatAdmin)?`<div class="chat-message-actions">${own?`<button class="chat-action" onclick="editChatMessage('${m.id}')">${escapeHtml(ctext('edit'))}</button>`:''}<button class="chat-action danger" onclick="deleteChatMessage('${m.id}')">${escapeHtml(ctext('delete'))}</button>${isChatAdmin&&!own?`<button class="chat-action danger" onclick="banChatUser('${m.user_id}')">${escapeHtml(ctext('ban'))}</button>`:''}</div>`:'';
+                return `<article class="chat-message ${own?'own':''}"><div class="chat-message-meta"><span class="chat-message-author">${escapeHtml(m.nickname)}</span><span>${date}</span>${edited?`<span class="chat-edited">· ${escapeHtml(ctext('edited'))}</span>`:''}</div><div class="chat-message-body">${escapeHtml(m.message)}</div>${actions}</article>`;
+            }).join('');
+            if(wasNearBottom)box.scrollTop=box.scrollHeight;
+        }
+        async function editChatMessage(id){
+            const msg=chatMessagesCache.find(m=>String(m.id)===String(id));if(!msg)return;
+            const revised=prompt(interfaceLanguage==='en'?'Edit your message':interfaceLanguage==='tr'?'Mesajınızı düzenleyin':'Corrige tu mensaje',msg.message);
+            if(revised===null)return;
+            const clean=revised.trim();if(!clean||clean.length>1000)return;
+            const {error}=await chatSupabaseClient.from('chat_messages').update({message:clean,updated_at:new Date().toISOString()}).eq('id',id);
+            if(error)alert('No se pudo editar: '+error.message);else await loadChatMessages();
+        }
+        async function deleteChatMessage(id){
+            if(!confirm(ctext('confirmDelete')))return;
+            const {error}=await chatSupabaseClient.from('chat_messages').delete().eq('id',id);
+            if(error)alert('No se pudo eliminar: '+error.message);else await loadChatMessages();
+        }
+        async function banChatUser(userId){
+            if(!isChatAdmin||!confirm(ctext('confirmBan')))return;
+            const {error}=await chatSupabaseClient.from('chat_bans').insert({user_id:userId,banned_by:chatUser.id});
+            if(error)alert('No se pudo bloquear: '+error.message);else alert(ctext('banned'));
+        }
+        function renderChatAdminTools(){
+            const box=document.getElementById('chat-admin-tools');if(!box)return;
+            if(!isAdmin&&!isChatAdmin){box.hidden=true;return;}
+            box.hidden=false;
+            const reviewPanel=document.getElementById('collab-admin-panel');if(reviewPanel)reviewPanel.hidden=!isChatAdmin;
+            if(isChatAdmin)loadCollaboratorReviewQueue();
+            const uid=chatUser?.id||'—';
+            const statusLabel=isChatAdmin?ctext('admin'):(interfaceLanguage==='en'?'Admin setup':interfaceLanguage==='tr'?'Yönetici kurulumu':'Configurar moderación');
+            const copyLabel=interfaceLanguage==='en'?'Copy ID':interfaceLanguage==='tr'?'Kimliği kopyala':'Copiar ID';
+            box.innerHTML=`<strong>${escapeHtml(statusLabel)}</strong><br>${escapeHtml(ctext('uid'))}<br><code>${escapeHtml(uid)}</code> <button class="chat-action" onclick="navigator.clipboard.writeText('${uid}')">${copyLabel}</button>`;
+        }
+
+
+        // PROPUESTAS DE COLABORADORES: cada visitante solo puede crear y consultar sus propias propuestas.
+        async function submitCollaboratorSong(event){
+            event.preventDefault();
+            if(!chatUser){alert(extraText('collabError')+'No hay sesión anónima activa. Recarga la página.');return;}
+            const audioUrl=document.getElementById('collab-suno-url').value.trim();
+            if(!/^https?:\/\/(?:www\.)?suno\.com\/(?:song|embed)\/[A-Za-z0-9-]+(?:[?#].*)?$/i.test(audioUrl)){alert(extraText('collabBadUrl'));return;}
+            const nickname=(document.getElementById('collab-nickname').value.trim()||localStorage.getItem('atlasika_chat_nickname')||'').slice(0,80);
+            const title=document.getElementById('collab-title-input').value.trim();
+            const lang=document.getElementById('collab-language').value;
+            const style=document.getElementById('collab-style').value.trim();
+            if(!nickname||!title||!style){alert(interfaceLanguage==='en'?'Complete the required fields.':interfaceLanguage==='tr'?'Zorunlu alanları doldurun.':'Completa los campos obligatorios.');return;}
+            const payload={user_id:chatUser.id,artist:nickname,title,country:document.getElementById('collab-country').value.trim(),genre:`${lang} - ${style}`,audio_url:audioUrl,cover_url:document.getElementById('collab-cover').value.trim()||null,description:document.getElementById('collab-description').value.trim()||null,lyrics:document.getElementById('collab-lyrics').value.trim()||null,status:'pending'};
+            const button=document.getElementById('collab-submit-button');button.disabled=true;
+            const {error}=await chatSupabaseClient.from('collaborator_submissions').insert(payload);
+            button.disabled=false;
+            if(error){console.error('Collaborator submission:',error);alert(extraText('collabError')+error.message);return;}
+            document.getElementById('collab-submit-form').reset();
+            alert(extraText('collabSent'));
+            await loadMyCollaboratorSubmissions();
+        }
+        async function loadMyCollaboratorSubmissions(){
+            if(!chatUser)return;
+            const {data,error}=await chatSupabaseClient.from('collaborator_submissions').select('id,title,status,created_at,admin_note').eq('user_id',chatUser.id).order('created_at',{ascending:false}).limit(30);
+            if(error){console.warn('My submissions:',error.message);return;}
+            myCollaboratorSubmissions=data||[];renderMyCollaboratorSubmissions();
+        }
+        let myCollaboratorSubmissions=[];
+        function renderMyCollaboratorSubmissions(){
+            const box=document.getElementById('collab-my-submissions');if(!box)return;
+            if(!myCollaboratorSubmissions.length){box.innerHTML=`<p class="chat-empty">${escapeHtml(extraText('collabMy'))}</p>`;return;}
+            box.innerHTML=myCollaboratorSubmissions.map(item=>`<div class="collab-status-item"><strong>${escapeHtml(item.title)}</strong><span class="collab-status ${escapeHtml(item.status)}">${escapeHtml(extraText(item.status==='approved'?'collabApproved':item.status==='rejected'?'collabRejected':'collabPending'))}</span>${item.admin_note?`<small>${escapeHtml(item.admin_note)}</small>`:''}</div>`).join('');
+        }
+        async function loadCollaboratorReviewQueue(){
+            const panel=document.getElementById('collab-admin-panel');if(!panel||!isChatAdmin)return;
+            panel.hidden=false;
+            const box=document.getElementById('collab-review-list');box.innerHTML='<p class="chat-empty">Loading…</p>';
+            const {data,error}=await chatSupabaseClient.from('collaborator_submissions').select('id,user_id,artist,title,country,genre,audio_url,cover_url,description,lyrics,created_at').eq('status','pending').order('created_at',{ascending:true}).limit(100);
+            if(error){box.innerHTML=`<p class="chat-empty">${escapeHtml(error.message)}</p>`;return;}
+            if(!data||!data.length){box.innerHTML=`<p class="chat-empty">${escapeHtml(extraText('collabNoPending'))}</p>`;return;}
+            box.innerHTML=data.map(item=>`<article class="collab-review-item"><div style="min-width:0;flex:1"><strong>${escapeHtml(item.title)}</strong><div class="chat-note">${escapeHtml(item.artist)} · ${escapeHtml(item.genre)} · ${escapeHtml(item.country||'')}</div><a href="${escapeHtml(item.audio_url)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent-primary);font-size:.8rem">Open Suno link</a>${item.description?`<p class="chat-note">${escapeHtml(item.description)}</p>`:''}${item.lyrics?`<details class="chat-note"><summary>Lyrics</summary><p style="white-space:pre-wrap">${escapeHtml(item.lyrics)}</p></details>`:''}</div><div class="collab-review-actions"><button class="approve" onclick="reviewCollaboratorSubmission('${item.id}','approved')">${escapeHtml(extraText('collabApprove'))}</button><button class="reject" onclick="reviewCollaboratorSubmission('${item.id}','rejected')">${escapeHtml(extraText('collabReject'))}</button></div></article>`).join('');
+        }
+        async function reviewCollaboratorSubmission(id,decision){
+            if(!isChatAdmin)return;
+            const verb=decision==='approved'?extraText('collabApproveVerb'):extraText('collabRejectVerb');
+            if(!confirm(extraText('collabReviewConfirm')+verb+'?'))return;
+            const note=prompt(interfaceLanguage==='en'?'Optional note to the creator:':interfaceLanguage==='tr'?'İçerik üreticiye not (isteğe bağlı):':'Nota para el creador (opcional):','');
+            if(note===null)return;
+            const {error}=await chatSupabaseClient.rpc('review_collaborator_submission',{p_submission_id:id,p_decision:decision,p_admin_note:note.trim()||null});
+            if(error){alert(extraText('collabReviewError')+error.message);return;}
+            await loadCollaboratorReviewQueue();
+            await loadMyCollaboratorSubmissions();
+            if(decision==='approved')await fetchSongsFromCloud();
+        }
+
         function openAboutModal() { document.getElementById('about-modal').style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        /* Contraseña de administrador conservada de la versión original */
+        /* El acceso de administración se valida en Supabase, no con una contraseña visible en el HTML. */
         function checkAdminPassword() {
-            if (isAdmin) { document.getElementById('admin-modal').style.display = 'flex'; return; }
-            const pass = prompt("Contraseña de administración:");
-            if (pass === "Roqueros70") {
-                isAdmin = true;
-                document.getElementById('admin-btn-text').innerText = "Admin (Activo)";
-                document.getElementById('admin-modal').style.display = 'flex';
-                renderApp();
-            } else if (pass !== null) { alert("Contraseña incorrecta."); }
+            if (!chatUser) {
+                alert(interfaceLanguage==='en'?'The secure session is not ready yet. Please wait and try again.':interfaceLanguage==='tr'?'Güvenli oturum henüz hazır değil. Lütfen bekleyip tekrar deneyin.':'La sesión segura todavía no está lista. Espera un momento y vuelve a intentarlo.');
+                return;
+            }
+            if (!isChatAdmin) {
+                const message=interfaceLanguage==='en'
+                    ? 'This session is not registered as the AtlasIKA administrator. Your session ID will be copied. Add it to chat_admins using the final SQL instruction, then reload the page.'
+                    : interfaceLanguage==='tr'
+                    ? 'Bu oturum AtlasIKA yöneticisi olarak kayıtlı değil. Oturum kimliğiniz kopyalanacak. Son SQL talimatıyla chat_admins tablosuna ekleyin ve sayfayı yenileyin.'
+                    : 'Esta sesión todavía no está registrada como administradora de AtlasIKA. Copiaremos tu ID. Añádelo a chat_admins siguiendo la última instrucción SQL y recarga la página.';
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(chatUser.id).then(()=>alert(message)).catch(()=>alert(message+'\nID: '+chatUser.id));
+                } else {
+                    alert(message+'\nID: '+chatUser.id);
+                }
+                return;
+            }
+            isAdmin = true;
+            document.getElementById('admin-btn-text').innerText = t('adminActive');
+            document.getElementById('admin-modal').style.display = 'flex';
+            renderChatAdminTools();
+            renderApp();
         }
 
         function setAdminMode(mode) {
@@ -1263,18 +1639,18 @@
 
             if (mode === 'add') {
                 selectGroup.style.display = 'none';
-                submitBtn.innerText = "Guardar Nueva Canción";
+                submitBtn.innerText = t("saveNewSong");
                 resetAdminForm();
             } else {
                 selectGroup.style.display = 'block';
-                submitBtn.innerText = "Actualizar Canción";
+                submitBtn.innerText = t("updateSong");
                 populateEditSelect();
             }
         }
 
         function populateEditSelect() {
             const select = document.getElementById('edit-song-select');
-            select.innerHTML = '<option value="">-- Elige un tema a modificar --</option>';
+            select.innerHTML = `<option value="">${escapeHtml(t('chooseTrackEdit'))}</option>`;
             songsCache.forEach(song => {
                 const opt = document.createElement('option');
                 opt.value = song.id;
@@ -1293,6 +1669,9 @@
             document.getElementById('edit-song-id').value = song.id;
             document.getElementById('song-title').value = song.title;
             document.getElementById('song-artist-input').value = song.artist || 'AtlasIKA';
+            document.getElementById('song-country-input').value = song.country || '';
+            document.getElementById('song-description-input').value = song.description || '';
+            document.getElementById('song-lyrics-input').value = song.lyrics || '';
             
             const parts = (song.genre || '').split(' - ');
             if (parts.length === 2) {
@@ -1311,6 +1690,7 @@
 
         async function saveSong(event) {
             event.preventDefault();
+            if (!isChatAdmin) { alert(interfaceLanguage==='en'?'Administrator permissions are required.':interfaceLanguage==='tr'?'Yönetici izni gerekiyor.':'Necesitas permisos de administrador.'); return; }
             
             const lang = document.getElementById('song-lang-input').value;
             const style = document.getElementById('song-style-input').value;
@@ -1319,6 +1699,8 @@
                 title: document.getElementById('song-title').value,
                 artist: document.getElementById('song-artist-input').value.trim() || 'AtlasIKA',
                 country: document.getElementById('song-country-input').value.trim(),
+                description: document.getElementById('song-description-input').value.trim(),
+                lyrics: document.getElementById('song-lyrics-input').value.trim(),
                 genre: `${lang} - ${style}`,
                 cover_url: document.getElementById('song-cover').value,
                 audio_url: document.getElementById('song-audio').value
@@ -1327,16 +1709,16 @@
             if (adminMode === 'add') {
                 songData.likes = 0;
                 songData.views = 0;
-                const { error } = await supabaseClient.from('songs').insert([songData]);
+                const { error } = await chatSupabaseClient.from('songs').insert([songData]);
                 if (error) { alert("Error al guardar: " + error.message); return; }
-                alert("¡Canción añadida con éxito!");
+                alert(t("songAdded"));
             } else {
                 const editId = parseInt(document.getElementById('edit-song-id').value);
-                if (!editId) { alert("Selecciona una canción de la lista para editar."); return; }
+                if (!editId) { alert(t("selectTrackEdit")); return; }
 
-                const { error } = await supabaseClient.from('songs').update(songData).eq('id', editId);
+                const { error } = await chatSupabaseClient.from('songs').update(songData).eq('id', editId);
                 if (error) { alert("Error al actualizar: " + error.message); return; }
-                alert("¡Canción actualizada con éxito!");
+                alert(t("songUpdated"));
             }
 
             resetAdminForm();
@@ -1345,8 +1727,9 @@
         }
 
         async function deleteSong(id) {
-            if (confirm("¿Seguro que deseas eliminar esta canción?")) {
-                const { error } = await supabaseClient.from('songs').delete().eq('id', id);
+            if (!isChatAdmin) { alert(interfaceLanguage==='en'?'Administrator permissions are required.':interfaceLanguage==='tr'?'Yönetici izni gerekiyor.':'Necesitas permisos de administrador.'); return; }
+            if (confirm(t("deleteConfirm"))) {
+                const { error } = await chatSupabaseClient.from('songs').delete().eq('id', id);
                 if (error) { alert("Error: " + error.message); return; }
             fetchSongsFromCloud();
             }
@@ -1358,7 +1741,11 @@
                 .then(() => console.log('Service Worker registrado correctamente'))
                 .catch((err) => console.log('Fallo al registrar el Service Worker', err));
         }
+            document.getElementById('ui-language-selector').value = interfaceLanguage;
+            applyInterfaceLanguage();
+            applyExtraUiLanguage();
             fetchSongsFromCloud();
+            initLiveChat();
     </script>
 </body>
 </html>
