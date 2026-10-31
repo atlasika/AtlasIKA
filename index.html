@@ -1529,6 +1529,7 @@
             if(error)alert('No se pudo eliminar: '+error.message);else await loadChatMessages();
         }
        
+
 async function banChatUser(userId){
     if(!isChatAdmin||!userId||userId===chatUser?.id)return;
 
@@ -1554,6 +1555,7 @@ async function banChatUser(userId){
             alert('No se pudo bloquear al usuario: '+banError.message);
             return;
         }
+    }
 
     const {error:deleteError}=await chatSupabaseClient
         .from('chat_messages')
@@ -1563,11 +1565,12 @@ async function banChatUser(userId){
     if(deleteError){
         alert('Usuario bloqueado, pero no se pudieron eliminar todos sus mensajes: '+deleteError.message);
         return;
-   }
+    }
 
     await loadChatMessages();
     alert('Usuario bloqueado y todos sus mensajes eliminados.');
-      }
+}
+
         function renderChatAdminTools(){
             const box=document.getElementById('chat-admin-tools');if(!box)return;
             if(!isAdmin&&!isChatAdmin){box.hidden=true;return;}
