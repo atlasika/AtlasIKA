@@ -542,6 +542,7 @@
                 <option value="Folk">Folk</option>
                 <option value="EDM">EDM</option>
                 <option value="Baladas">Baladas</option>
+                <option value="World Music">World Music</option>
             </select>
 
             <button class="reset-filter-btn" id="reset-interactive-btn" style="display:none;" onclick="resetInteractiveFilters()">
@@ -558,6 +559,24 @@
             <button id="clear-search-btn" class="clear-search-btn" onclick="clearSearch()">&times;</button>
         </div>
     </div>
+
+    <!-- CATEGORÍAS Y VISTAS -->
+    <div class="categories-controls-wrapper">
+        <div class="categories" id="category-filters">
+            <button class="cat-btn active" data-filter="all" data-i18n="all">Todas</button>
+            <button class="cat-btn news-filter" data-filter="novedades"><i class="fa-solid fa-fire"></i> 🔥 <span data-i18n="newReleases">Novedades</span></button>
+        </div>
+
+        <div class="view-toggle-bar">
+            <button class="view-btn" id="grid-view-btn" onclick="switchView('grid')" title="Cuadrícula" data-i18n-title="grid">
+                <i class="fa-solid fa-border-all"></i> <span data-i18n="grid">Grid</span>
+            </button>
+            <button class="view-btn active" id="list-view-btn" onclick="switchView('list')" title="Lista" data-i18n-title="list">
+                <i class="fa-solid fa-bars"></i> <span data-i18n="list">Lista</span>
+            </button>
+        </div>
+    </div>
+
 
     <!-- REPRODUCTOR NATIVO PRO REFINADO -->
     <div class="main-player-section" id="main-player-box">
@@ -604,23 +623,6 @@
             <button class="control-btn" onclick="nextSong()"><i class="fa-solid fa-forward-step"></i> <span data-i18n="next">Siguiente</span></button>
             <button class="control-btn active-mode" id="auto-chain-btn" onclick="toggleAutoChain()" title="Alternar entre pasar a la siguiente canción o repetir la actual"><i class="fa-solid fa-forward-step"></i> <span data-i18n="radio">Al terminar</span>: <span id="end-mode-label" data-i18n="endNext">Siguiente canción</span></button>
             <button class="control-btn" id="shuffle-btn" onclick="toggleShuffle()"><i class="fa-solid fa-shuffle"></i> <span data-i18n="random">Aleatorio</span>: OFF</button>
-        </div>
-    </div>
-
-    <!-- CATEGORÍAS Y VISTAS -->
-    <div class="categories-controls-wrapper">
-        <div class="categories" id="category-filters">
-            <button class="cat-btn active" data-filter="all" data-i18n="all">Todas</button>
-            <button class="cat-btn news-filter" data-filter="novedades"><i class="fa-solid fa-fire"></i> 🔥 <span data-i18n="newReleases">Novedades</span></button>
-        </div>
-
-        <div class="view-toggle-bar">
-            <button class="view-btn" id="grid-view-btn" onclick="switchView('grid')" title="Cuadrícula" data-i18n-title="grid">
-                <i class="fa-solid fa-border-all"></i> <span data-i18n="grid">Grid</span>
-            </button>
-            <button class="view-btn active" id="list-view-btn" onclick="switchView('list')" title="Lista" data-i18n-title="list">
-                <i class="fa-solid fa-bars"></i> <span data-i18n="list">Lista</span>
-            </button>
         </div>
     </div>
 
@@ -746,6 +748,7 @@
                         <option value="Folk">Folk</option>
                         <option value="EDM">EDM</option>
                         <option value="Baladas">Baladas</option>
+                <option value="World Music">World Music</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -762,7 +765,7 @@
                 </div>
                 <div class="form-group">
                     <label data-i18n="songUrl">URL de la canción (MP3 o Suno)</label>
-                    <input type="url" id="song-audio" required placeholder="https://suno.com/song/... o URL MP3">
+                    <input type="url" id="song-audio" required placeholder="https://suno.com/s/... o URL MP3">
                 </div>
                 <button type="submit" class="submit-btn" id="form-submit-btn" data-i18n="saveSong">Guardar Canción</button>
             </form>
@@ -879,7 +882,7 @@
         }
 
         function getSunoSongId(url) {
-            const match = String(url || '').match(/suno\.com\/(?:song|embed)\/([a-zA-Z0-9-]+)/i);
+            const match = String(url || '').match(/suno\.com\/(?:s|song|embed)\/([a-zA-Z0-9-]+)/i);
             return match ? match[1] : null;
         }
 
@@ -1065,12 +1068,6 @@
         function nextSong() {
             const songs = getFilteredSongs();
             if (songs.length === 0) return;
-            // If the active filters leave only one track, do not reload it as if it were the next song.
-            if (songs.length === 1) {
-                audioElement.pause();
-                updatePlayButtonState(false);
-                return;
-            }
             if (isShuffleActive) {
                 const randomIndex = Math.floor(Math.random() * songs.length);
                 loadSongToPlayer(randomIndex);
