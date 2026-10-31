@@ -1528,11 +1528,46 @@
             const {error}=await chatSupabaseClient.from('chat_messages').delete().eq('id',id);
             if(error)alert('No se pudo eliminar: '+error.message);else await loadChatMessages();
         }
-        async function banChatUser(userId){
-            if(!isChatAdmin||!confirm(ctext('confirmBan')))return;
-            const {error}=await chatSupabaseClient.from('chat_bans').insert({user_id:userId,banned_by:chatUser.id});
-            if(error)alert('No se pudo bloquear: '+error.message);else alert(ctext('banned'));
+       
+async function banChatUser(userId){
+    if(!isChatAdmin||!userId||userId===chatUser?.id)return;
+
+    if(!confirm('¿Bloquear a este usuario y eliminar TODOS sus mensajes del chat? Esta acción no se puede deshacer.'))return;
+
+    const {data:existingBan,error:checkError}=await chatSupabaseClient
+        .from('chat_bans')
+        .select('user_id')
+        .eq('user_id',userId)
+        .maybeSingle();
+
+    if(checkError){
+        alert('No se pudo comprobar el bloqueo: '+checkError.message);
+        return;
+    }
+
+    if(!existingBan){
+        const {error:banError}=await chatSupabaseClient
+            .from('chat_bans')
+            .insert({user_id:userId,banned_by:chatUser.id});
+
+        if(banError){
+            alert('No se pudo bloquear al usuario: '+banError.message);
+            return;
         }
+
+    const {error:deleteError}=await chatSupabaseClient
+        .from('chat_messages')
+        .delete()
+        .eq('user_id',userId);
+
+    if(deleteError){
+        alert('Usuario bloqueado, pero no se pudieron eliminar todos sus mensajes: '+deleteError.message);
+        return;
+   }
+
+    await loadChatMessages();
+    alert('Usuario bloqueado y todos sus mensajes eliminados.');
+      }
         function renderChatAdminTools(){
             const box=document.getElementById('chat-admin-tools');if(!box)return;
             if(!isAdmin&&!isChatAdmin){box.hidden=true;return;}
