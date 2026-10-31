@@ -355,6 +355,47 @@
         .form-group { margin-bottom: 1rem; }
         .form-group label { display: block; margin-bottom: 0.4rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; }
         .form-group input, .form-group select { width: 100%; padding: 0.8rem; border-radius: 10px; border: 1px solid var(--border-color); background: #0a0b10; color: #fff; outline: none; font-size: 0.95rem; }
+
+
+        /* FORMULARIO ADMIN: dos columnas en escritorio, una en móvil */
+        #admin-modal .modal-content {
+            max-width: 920px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        #add-song-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            column-gap: 18px;
+            row-gap: 0;
+        }
+        #add-song-form .form-group {
+            min-width: 0;
+        }
+        #add-song-form #song-select-group,
+        #add-song-form .form-group:has(textarea),
+        #add-song-form #form-submit-btn {
+            grid-column: 1 / -1;
+        }
+        #add-song-form input,
+        #add-song-form select,
+        #add-song-form textarea {
+            min-width: 0;
+        }
+        @media (max-width: 650px) {
+            #admin-modal .modal-content {
+                padding: 1.2rem;
+                max-height: 92vh;
+            }
+            #add-song-form {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            #add-song-form #song-select-group,
+            #add-song-form .form-group:has(textarea),
+            #add-song-form #form-submit-btn {
+                grid-column: 1;
+            }
+        }
         .submit-btn { width: 100%; background: var(--accent-primary); color: #000; border: none; padding: 0.85rem; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.95rem; }
         
         .admin-mode-selector {
@@ -569,6 +610,7 @@
     <!-- CATEGORÍAS Y VISTAS -->
     <div class="categories-controls-wrapper">
         <div class="categories" id="category-filters">
+            <button class="cat-btn" id="all-songs-radio-btn" type="button" onclick="playAllSongsRadio()"><i class="fa-solid fa-globe"></i> ALL SONGS</button>
             <button class="cat-btn active" data-filter="all" data-i18n="all">Todas</button>
             <button class="cat-btn news-filter" data-filter="novedades"><i class="fa-solid fa-fire"></i> 🔥 <span data-i18n="newReleases">Novedades</span></button>
         </div>
@@ -1231,6 +1273,32 @@
             searchQuery = '';
             document.getElementById('clear-search-btn').style.display = 'none';
             renderApp();
+        }
+
+        // Inicia la radio con TODO el catálogo, sin filtros de país, idioma, estilo o búsqueda.
+        function playAllSongsRadio() {
+            currentFilter = 'all';
+            selectedCountry = '';
+            selectedLang = '';
+            selectedStyle = '';
+            searchQuery = '';
+            const countrySelect = document.getElementById('select-country');
+            const languageSelect = document.getElementById('select-language');
+            const styleSelect = document.getElementById('select-style');
+            const searchInput = document.getElementById('song-search-input');
+            if (countrySelect) countrySelect.value = '';
+            if (languageSelect) languageSelect.value = '';
+            if (styleSelect) { styleSelect.value = ''; styleSelect.disabled = true; }
+            if (searchInput) searchInput.value = '';
+            const clearSearchBtn = document.getElementById('clear-search-btn');
+            if (clearSearchBtn) clearSearchBtn.style.display = 'none';
+            updateInteractiveResetButton();
+            document.querySelectorAll('#category-filters .cat-btn').forEach(btn => btn.classList.toggle('active', btn.id === 'all-songs-radio-btn'));
+            currentTrackIndex = 0;
+            renderApp();
+            const allSongs = getFilteredSongs();
+            if (allSongs.length) loadSongToPlayer(0, true);
+            else alert('Todavía no hay canciones publicadas en AtlasIKA.');
         }
 
         function switchView(viewType) {
