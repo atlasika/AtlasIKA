@@ -1300,13 +1300,15 @@
         }
 
         function handleCountryChange() {
+            clearPlaylistPlaybackState();
             selectedCountry = document.getElementById('select-country').value;
-            currentTrackIndex = 0;
+            syncCurrentTrackIndex();
             renderApp();
         }
 
         /* LÓGICA DE INTERACCIÓN IDIOMA Y ESTILO */
         function handleLanguageChange() {
+            clearPlaylistPlaybackState();
             const langSelect = document.getElementById('select-language');
             const styleSelect = document.getElementById('select-style');
             selectedLang = langSelect.value;
@@ -1319,18 +1321,20 @@
                 selectedStyle = "";
             }
             updateInteractiveResetButton();
-            currentTrackIndex = 0;
+            syncCurrentTrackIndex();
             renderApp();
         }
 
         function handleStyleChange() {
+            clearPlaylistPlaybackState();
             selectedStyle = document.getElementById('select-style').value;
             updateInteractiveResetButton();
-            currentTrackIndex = 0;
+            syncCurrentTrackIndex();
             renderApp();
         }
 
         function resetInteractiveFilters() {
+            clearPlaylistPlaybackState();
             document.getElementById('select-language').value = "";
             const styleSelect = document.getElementById('select-style');
             styleSelect.value = "";
@@ -1338,7 +1342,7 @@
             selectedLang = "";
             selectedStyle = "";
             updateInteractiveResetButton();
-            currentTrackIndex = 0;
+            syncCurrentTrackIndex();
             renderApp();
         }
 
@@ -1361,6 +1365,32 @@
             song.views = (song.views || 0) + 1;
             renderApp();
             await supabaseClient.from('songs').update({ views: song.views }).eq('id', songId);
+        }
+
+        // Cancela el filtro de reproducción de cualquier playlist sin detener la canción actual.
+        // El índice queda alineado con la canción que sigue sonando para que next/previous
+        // continúen desde ella dentro del nuevo catálogo filtrado.
+        function syncCurrentTrackIndex() {
+            const availableSongs = getFilteredSongs();
+            currentTrackIndex = currentPlayingSongId == null
+                ? -1
+                : availableSongs.findIndex(song => String(song.id) === String(currentPlayingSongId));
+        }
+
+        function clearPlaylistPlaybackState() {
+            activePlaylistSongIds = null;
+            currentPublicPlaylistId = null;
+            currentPlaylistId = null;
+
+            const publicView = document.getElementById('public-playlist-songs-view');
+            const privateView = document.getElementById('playlist-songs-view');
+            const exitButton = document.getElementById('exit-playlist-btn');
+
+            if (publicView) publicView.hidden = true;
+            if (privateView) privateView.hidden = true;
+            if (exitButton) exitButton.hidden = true;
+
+            syncCurrentTrackIndex();
         }
 
         function getFilteredSongs() {
@@ -1388,21 +1418,25 @@
         }
 
         function handleSearchInput() {
+            clearPlaylistPlaybackState();
             searchQuery = document.getElementById('song-search-input').value.trim();
             document.getElementById('clear-search-btn').style.display = searchQuery ? 'block' : 'none';
-            currentTrackIndex = 0;
+            syncCurrentTrackIndex();
             renderApp();
         }
 
         function clearSearch() {
+            clearPlaylistPlaybackState();
             document.getElementById('song-search-input').value = '';
             searchQuery = '';
             document.getElementById('clear-search-btn').style.display = 'none';
+            syncCurrentTrackIndex();
             renderApp();
         }
 
         // Inicia la radio con TODO el catálogo, sin filtros de país, idioma, estilo o búsqueda.
         function playAllSongsRadio() {
+            clearPlaylistPlaybackState();
             currentFilter = 'all';
             selectedCountry = '';
             selectedLang = '';
@@ -1419,6 +1453,7 @@
             const clearSearchBtn = document.getElementById('clear-search-btn');
             if (clearSearchBtn) clearSearchBtn.style.display = 'none';
             updateInteractiveResetButton();
+            syncCurrentTrackIndex();
             document.querySelectorAll('#category-filters .cat-btn').forEach(btn => btn.classList.toggle('active', btn.id === 'all-songs-radio-btn'));
             currentTrackIndex = 0;
             renderApp();
@@ -1620,11 +1655,12 @@
 
         document.querySelectorAll('.cat-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                clearPlaylistPlaybackState();
                 document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
                 const target = e.target.closest('.cat-btn');
                 target.classList.add('active');
                 currentFilter = target.getAttribute('data-filter');
-                currentTrackIndex = 0;
+                syncCurrentTrackIndex();
                 renderApp();
             });
         });
@@ -2134,6 +2170,11 @@ async function banChatUser(userId){
             activePlaylistSongIds=(data||[]).map(x=>String(x.song_id)).filter(songId=>songsCache.some(song=>String(song.id)===songId));
             if(!activePlaylistSongIds.length){alert('Esta playlist todavía no contiene canciones.');activePlaylistSongIds=null;return;}
             currentPublicPlaylistId=id;
+            currentPlaylistId=null;
+            const privateView=document.getElementById('playlist-songs-view');
+            const exitButton=document.getElementById('exit-playlist-btn');
+            if(privateView) privateView.hidden=true;
+            if(exitButton) exitButton.hidden=true;
             const view=document.getElementById('public-playlist-songs-view');
             view.hidden=false;view.innerHTML=`<h3>${escapeHtml(p.name)}</h3><p class="playlist-note">${activePlaylistSongIds.length} canciones</p>`;
             renderApp();loadSongToPlayer(0,true);
@@ -2290,7 +2331,10 @@ async function banChatUser(userId){
             if(!activePlaylistSongIds.length){alert('This playlist has no available songs.');activePlaylistSongIds=null;return;}
             document.getElementById('exit-playlist-btn').hidden=false;renderApp();loadSongToPlayer(0,true);
         }
-        function exitPlaylistPlayback(){activePlaylistSongIds=null;currentPlaylistId=null;document.getElementById('exit-playlist-btn').hidden=true;document.getElementById('playlist-songs-view').hidden=true;renderApp();}
+        function exitPlaylistPlayback(){
+            clearPlaylistPlaybackState();
+            renderApp();
+        }
 
         // REGISTRO DE SERVICE WORKER PARA PWA
         if ('serviceWorker' in navigator) {
