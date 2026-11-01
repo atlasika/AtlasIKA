@@ -232,6 +232,14 @@
         .cat-btn:hover, .cat-btn.active { background: var(--accent-primary); color: #000; border-color: var(--accent-primary); box-shadow: 0 0 30px rgba(0, 240, 255, 0.7); transform: translateY(-3px); }
         .cat-btn.news-filter { border-color: var(--accent-secondary); color: var(--accent-secondary); background: rgba(255, 0, 127, 0.1); }
         .cat-btn.news-filter:hover, .cat-btn.news-filter.active { background: var(--accent-secondary); color: #fff; box-shadow: 0 0 30px rgba(255, 0, 127, 0.7); }
+        .playlist-filter-select {
+            appearance: auto; -webkit-appearance: auto; max-width: 210px;
+            background: rgba(22, 25, 38, 0.9); border: 1px solid var(--accent-primary);
+            color: var(--accent-primary); padding: 0.55rem 0.85rem; border-radius: 30px;
+            cursor: pointer; font-weight: 700; font-size: 0.85rem; min-height: 38px;
+        }
+        .playlist-filter-select:focus { outline: 2px solid rgba(0,240,255,.35); }
+        .playlist-filter-select option { background: #121420; color: #fff; }
 
         .view-toggle-bar {
             display: flex; gap: 6px; background: rgba(18, 20, 32, 0.8); border: 1px solid var(--border-color);
@@ -644,6 +652,9 @@
             <button class="cat-btn" id="all-songs-radio-btn" type="button" onclick="playAllSongsRadio()"><i class="fa-solid fa-globe"></i> ALL SONGS</button>
             <button class="cat-btn active" data-filter="all" data-i18n="all">Todas</button>
             <button class="cat-btn news-filter" data-filter="novedades"><i class="fa-solid fa-fire"></i> 🔥 <span data-i18n="newReleases">Novedades</span></button>
+            <select id="public-playlists-dropdown" class="playlist-filter-select" aria-label="Playlists públicas" onchange="handlePublicPlaylistSelect(this.value)">
+                <option value="">🎵 Playlists ▼</option>
+            </select>
         </div>
 
         <div class="view-toggle-bar">
@@ -714,12 +725,8 @@
         <button type="button" id="exit-playlist-btn" class="share-btn" onclick="exitPlaylistPlayback()" hidden>Back to all songs</button>
     </section>
 
-    <!-- PLAYLISTS PÚBLICAS: visibles para todos; gestión exclusiva del administrador -->
-    <section id="public-playlists-section" class="public-playlists-section">
-        <div class="playlist-panel-heading"><h2><i class="fa-solid fa-globe"></i> Playlists públicas</h2></div>
-        <div id="public-playlists-list" class="public-playlists-grid"><p class="playlist-note">Cargando playlists…</p></div>
-        <div id="public-playlist-songs-view" class="playlist-songs-view" hidden></div>
-    </section>
+    <!-- Vista de gestión de canciones de playlists públicas: solo se muestra al administrador -->
+    <div id="public-playlist-songs-view" class="playlist-songs-view" hidden></div>
 
     <!-- LISTADO DE CANCIONES (VISTA LISTA POR DEFECTO) -->
     <div class="container" id="songs-container">
@@ -1299,16 +1306,37 @@
             selectedCountry = select.value;
         }
 
+        // Salir de la cola de una playlist cuando el usuario elige otro filtro del catálogo.
+        function clearActivePlaylistPlayback() {
+            activePlaylistSongIds = null;
+            currentPlaylistId = null;
+            currentPublicPlaylistId = null;
+            const exitButton = document.getElementById('exit-playlist-btn');
+            const playlistView = document.getElementById('playlist-songs-view');
+            if (exitButton) exitButton.hidden = true;
+            if (playlistView) {
+                playlistView.hidden = true;
+                playlistView.innerHTML = '';
+            }
+            const publicPlaylistView = document.getElementById('public-playlist-songs-view');
+            if (publicPlaylistView) {
+                publicPlaylistView.hidden = true;
+                publicPlaylistView.innerHTML = '';
+            }
+            const publicPlaylistSelect = document.getElementById('public-playlists-dropdown');
+            if (publicPlaylistSelect) publicPlaylistSelect.value = '';
+        }
+
         function handleCountryChange() {
-            clearPlaylistPlaybackState();
+            clearActivePlaylistPlayback();
             selectedCountry = document.getElementById('select-country').value;
-            syncCurrentTrackIndex();
+            currentTrackIndex = 0;
             renderApp();
         }
 
         /* LÓGICA DE INTERACCIÓN IDIOMA Y ESTILO */
         function handleLanguageChange() {
-            clearPlaylistPlaybackState();
+            clearActivePlaylistPlayback();
             const langSelect = document.getElementById('select-language');
             const styleSelect = document.getElementById('select-style');
             selectedLang = langSelect.value;
@@ -1321,20 +1349,20 @@
                 selectedStyle = "";
             }
             updateInteractiveResetButton();
-            syncCurrentTrackIndex();
+            currentTrackIndex = 0;
             renderApp();
         }
 
         function handleStyleChange() {
-            clearPlaylistPlaybackState();
+            clearActivePlaylistPlayback();
             selectedStyle = document.getElementById('select-style').value;
             updateInteractiveResetButton();
-            syncCurrentTrackIndex();
+            currentTrackIndex = 0;
             renderApp();
         }
 
         function resetInteractiveFilters() {
-            clearPlaylistPlaybackState();
+            clearActivePlaylistPlayback();
             document.getElementById('select-language').value = "";
             const styleSelect = document.getElementById('select-style');
             styleSelect.value = "";
@@ -1342,7 +1370,7 @@
             selectedLang = "";
             selectedStyle = "";
             updateInteractiveResetButton();
-            syncCurrentTrackIndex();
+            currentTrackIndex = 0;
             renderApp();
         }
 
@@ -1365,32 +1393,6 @@
             song.views = (song.views || 0) + 1;
             renderApp();
             await supabaseClient.from('songs').update({ views: song.views }).eq('id', songId);
-        }
-
-        // Cancela el filtro de reproducción de cualquier playlist sin detener la canción actual.
-        // El índice queda alineado con la canción que sigue sonando para que next/previous
-        // continúen desde ella dentro del nuevo catálogo filtrado.
-        function syncCurrentTrackIndex() {
-            const availableSongs = getFilteredSongs();
-            currentTrackIndex = currentPlayingSongId == null
-                ? -1
-                : availableSongs.findIndex(song => String(song.id) === String(currentPlayingSongId));
-        }
-
-        function clearPlaylistPlaybackState() {
-            activePlaylistSongIds = null;
-            currentPublicPlaylistId = null;
-            currentPlaylistId = null;
-
-            const publicView = document.getElementById('public-playlist-songs-view');
-            const privateView = document.getElementById('playlist-songs-view');
-            const exitButton = document.getElementById('exit-playlist-btn');
-
-            if (publicView) publicView.hidden = true;
-            if (privateView) privateView.hidden = true;
-            if (exitButton) exitButton.hidden = true;
-
-            syncCurrentTrackIndex();
         }
 
         function getFilteredSongs() {
@@ -1418,25 +1420,24 @@
         }
 
         function handleSearchInput() {
-            clearPlaylistPlaybackState();
+            clearActivePlaylistPlayback();
             searchQuery = document.getElementById('song-search-input').value.trim();
             document.getElementById('clear-search-btn').style.display = searchQuery ? 'block' : 'none';
-            syncCurrentTrackIndex();
+            currentTrackIndex = 0;
             renderApp();
         }
 
         function clearSearch() {
-            clearPlaylistPlaybackState();
+            clearActivePlaylistPlayback();
             document.getElementById('song-search-input').value = '';
             searchQuery = '';
             document.getElementById('clear-search-btn').style.display = 'none';
-            syncCurrentTrackIndex();
             renderApp();
         }
 
         // Inicia la radio con TODO el catálogo, sin filtros de país, idioma, estilo o búsqueda.
         function playAllSongsRadio() {
-            clearPlaylistPlaybackState();
+            clearActivePlaylistPlayback();
             currentFilter = 'all';
             selectedCountry = '';
             selectedLang = '';
@@ -1453,7 +1454,6 @@
             const clearSearchBtn = document.getElementById('clear-search-btn');
             if (clearSearchBtn) clearSearchBtn.style.display = 'none';
             updateInteractiveResetButton();
-            syncCurrentTrackIndex();
             document.querySelectorAll('#category-filters .cat-btn').forEach(btn => btn.classList.toggle('active', btn.id === 'all-songs-radio-btn'));
             currentTrackIndex = 0;
             renderApp();
@@ -1655,12 +1655,12 @@
 
         document.querySelectorAll('.cat-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                clearPlaylistPlaybackState();
+                clearActivePlaylistPlayback();
                 document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
                 const target = e.target.closest('.cat-btn');
                 target.classList.add('active');
                 currentFilter = target.getAttribute('data-filter');
-                syncCurrentTrackIndex();
+                currentTrackIndex = 0;
                 renderApp();
             });
         });
@@ -2089,10 +2089,18 @@ async function banChatUser(userId){
             populatePublicPlaylistSelect();
         }
         function renderPublicPlaylists(){
-            const root=document.getElementById('public-playlists-list');if(!root)return;
+            populatePublicPlaylistDropdown();
+        }
+        function populatePublicPlaylistDropdown(){
+            const select=document.getElementById('public-playlists-dropdown');if(!select)return;
+            const current=select.value;
             const visible=cachedPublicPlaylists.filter(p=>p.is_published||isChatAdmin);
-            if(!visible.length){root.innerHTML='<p class="playlist-note">Todavía no hay playlists públicas.</p>';return;}
-            root.innerHTML=visible.map(p=>`<article class="public-playlist-card"><h3>${escapeHtml(p.name)}</h3>${p.description?`<p>${escapeHtml(p.description)}</p>`:''}<button type="button" class="load-to-player-btn" onclick="playPublicPlaylist(${Number(p.id)})"><i class="fa-solid fa-play"></i> Escuchar</button>${isChatAdmin?` <span class="playlist-note">${p.is_published?'Publicada':'Borrador'}</span>`:''}</article>`).join('');
+            select.innerHTML='<option value="">🎵 Playlists ▼</option>'+visible.map(p=>`<option value="${Number(p.id)}">${escapeHtml(p.name)}</option>`).join('');
+            if(visible.some(p=>String(p.id)===String(current)))select.value=current;
+        }
+        function handlePublicPlaylistSelect(id){
+            if(!id)return;
+            playPublicPlaylist(Number(id));
         }
         function renderAdminPublicPlaylists(){
             const root=document.getElementById('admin-public-playlists-list');if(!root)return;
@@ -2144,7 +2152,12 @@ async function banChatUser(userId){
             if(!isChatAdmin||!confirm('¿Eliminar esta playlist pública y su lista de canciones?'))return;
             const {error}=await chatSupabaseClient.from('atlasika_public_playlists').delete().eq('id',id);
             if(error){alert('No se pudo eliminar: '+error.message);return;}
-            if(Number(currentPublicPlaylistId)===Number(id)){currentPublicPlaylistId=null;document.getElementById('public-playlist-songs-view').hidden=true;}
+            if(Number(currentPublicPlaylistId)===Number(id)){
+                currentPublicPlaylistId=null;
+                const view=document.getElementById('public-playlist-songs-view');if(view)view.hidden=true;
+                const dropdown=document.getElementById('public-playlists-dropdown');if(dropdown)dropdown.value='';
+                activePlaylistSongIds=null;
+            }
             await loadPublicPlaylists(true);
         }
         async function managePublicPlaylistSongs(id){
@@ -2168,13 +2181,16 @@ async function banChatUser(userId){
             const {data,error}=await chatSupabaseClient.from('atlasika_public_playlist_songs').select('song_id,added_at').eq('playlist_id',id).order('added_at',{ascending:true});
             if(error){alert('No se pudo reproducir la playlist: '+error.message);return;}
             activePlaylistSongIds=(data||[]).map(x=>String(x.song_id)).filter(songId=>songsCache.some(song=>String(song.id)===songId));
-            if(!activePlaylistSongIds.length){alert('Esta playlist todavía no contiene canciones.');activePlaylistSongIds=null;return;}
+            if(!activePlaylistSongIds.length){
+                alert('Esta playlist todavía no contiene canciones.');
+                activePlaylistSongIds=null;
+                const playlistDropdown=document.getElementById('public-playlists-dropdown');
+                if(playlistDropdown)playlistDropdown.value='';
+                return;
+            }
             currentPublicPlaylistId=id;
-            currentPlaylistId=null;
-            const privateView=document.getElementById('playlist-songs-view');
-            const exitButton=document.getElementById('exit-playlist-btn');
-            if(privateView) privateView.hidden=true;
-            if(exitButton) exitButton.hidden=true;
+            const playlistDropdown=document.getElementById('public-playlists-dropdown');
+            if(playlistDropdown)playlistDropdown.value=String(id);
             const view=document.getElementById('public-playlist-songs-view');
             view.hidden=false;view.innerHTML=`<h3>${escapeHtml(p.name)}</h3><p class="playlist-note">${activePlaylistSongIds.length} canciones</p>`;
             renderApp();loadSongToPlayer(0,true);
@@ -2331,10 +2347,7 @@ async function banChatUser(userId){
             if(!activePlaylistSongIds.length){alert('This playlist has no available songs.');activePlaylistSongIds=null;return;}
             document.getElementById('exit-playlist-btn').hidden=false;renderApp();loadSongToPlayer(0,true);
         }
-        function exitPlaylistPlayback(){
-            clearPlaylistPlaybackState();
-            renderApp();
-        }
+        function exitPlaylistPlayback(){activePlaylistSongIds=null;currentPlaylistId=null;document.getElementById('exit-playlist-btn').hidden=true;document.getElementById('playlist-songs-view').hidden=true;renderApp();}
 
         // REGISTRO DE SERVICE WORKER PARA PWA
         if ('serviceWorker' in navigator) {
