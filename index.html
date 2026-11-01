@@ -556,6 +556,19 @@
         .playlist-item-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.playlist-item-actions button,.playlist-song-row button{padding:6px 10px}
         .playlist-songs-view{margin-top:12px;padding-top:12px;border-top:1px solid var(--border-color)}
         .playlist-song-row{padding:7px 0;border-bottom:1px solid var(--border-color)}
+        .public-playlists-section{width:100%;max-width:1200px;margin:0 auto 22px;padding:18px;background:var(--card-bg);border:1px solid rgba(0,240,255,.25);border-radius:18px;z-index:2}
+        .public-playlists-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:12px}
+        .public-playlist-card{padding:14px;border:1px solid var(--border-color);border-radius:12px;background:rgba(0,0,0,.2)}
+        .public-playlist-card h3{font-size:1rem;margin-bottom:6px;color:#fff}.public-playlist-card p{font-size:.82rem;color:var(--text-muted);margin-bottom:10px}
+        .admin-playlist-panel{display:none}.admin-playlist-panel.active{display:block}
+        .admin-playlist-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+        .admin-playlist-form input,.admin-playlist-form textarea{width:100%;padding:10px;border:1px solid var(--border-color);border-radius:9px;background:#0a0b10;color:#fff;font:inherit}
+        .admin-playlist-form textarea{grid-column:1/-1;min-height:65px}.admin-playlist-form button{grid-column:1/-1}
+        .admin-playlist-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px;border:1px solid var(--border-color);border-radius:10px;margin:8px 0}
+        .admin-playlist-actions{display:flex;gap:6px;flex-wrap:wrap}
+        .playlist-quick-create{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+        .playlist-quick-create input{flex:1;min-width:160px}
+        @media(max-width:600px){.admin-playlist-form{grid-template-columns:1fr}.admin-playlist-form textarea,.admin-playlist-form button{grid-column:1}}
         [hidden]{display:none!important}
     </style>
 </head>
@@ -701,6 +714,13 @@
         <button type="button" id="exit-playlist-btn" class="share-btn" onclick="exitPlaylistPlayback()" hidden>Back to all songs</button>
     </section>
 
+    <!-- PLAYLISTS PÚBLICAS: visibles para todos; gestión exclusiva del administrador -->
+    <section id="public-playlists-section" class="public-playlists-section">
+        <div class="playlist-panel-heading"><h2><i class="fa-solid fa-globe"></i> Playlists públicas</h2></div>
+        <div id="public-playlists-list" class="public-playlists-grid"><p class="playlist-note">Cargando playlists…</p></div>
+        <div id="public-playlist-songs-view" class="playlist-songs-view" hidden></div>
+    </section>
+
     <!-- LISTADO DE CANCIONES (VISTA LISTA POR DEFECTO) -->
     <div class="container" id="songs-container">
         <p style="text-align: center; color: var(--text-muted);" data-i18n="connecting">Conectando con Supabase...</p>
@@ -815,6 +835,21 @@
                 <button type="button" class="admin-tab-btn" id="tab-edit-btn" onclick="setAdminMode('edit')">
                     <i class="fa-solid fa-pen-to-square"></i> <span data-i18n="edit">Modificar</span>
                 </button>
+                <button type="button" class="admin-tab-btn" id="tab-playlists-btn" onclick="setAdminMode('playlists')">
+                    <i class="fa-solid fa-list"></i> Playlists
+                </button>
+            </div>
+
+            <div id="admin-playlist-panel" class="admin-playlist-panel">
+                <h3 style="color:var(--accent-primary)">Crear playlist pública</h3>
+                <form id="admin-public-playlist-form" class="admin-playlist-form" onsubmit="savePublicPlaylist(event)">
+                    <input id="public-playlist-name" type="text" maxlength="80" required placeholder="Nombre de la playlist">
+                    <input id="public-playlist-description" type="text" maxlength="180" placeholder="Descripción (opcional)">
+                    <label style="color:var(--text-muted);display:flex;gap:8px;align-items:center"><input id="public-playlist-published" type="checkbox" checked> Publicada y visible para todos</label>
+                    <button type="submit" class="submit-btn">Crear playlist</button>
+                </form>
+                <h3 style="color:var(--accent-primary);margin:18px 0 8px">Playlists públicas existentes</h3>
+                <div id="admin-public-playlists-list"><p class="playlist-note">Cargando…</p></div>
             </div>
 
             <form id="add-song-form" onsubmit="saveSong(event)">
@@ -883,6 +918,15 @@
                     <details class="song-link-help"><summary>How to copy a Suno song link</summary><ol><li>Open Suno in your computer browser.</li><li>Open the song's own page by clicking its title.</li><li>Copy the complete address from the browser address bar.</li><li>Paste it into the Song URL field above.</li></ol><p>Alternative: copy the full page address manually from the browser address bar.</p></details>
                     <details class="song-link-help"><summary>How to add an MP3 link</summary><ol><li>Upload the MP3 file to a cloud storage service.</li><li>Make sure the file is publicly accessible.</li><li>Copy the direct link to the MP3 file.</li><li>Paste it into the Song URL field above.</li></ol><p>The link must open the audio file directly and allow playback without signing in. Do not paste a folder link or a page that requires a login.</p></details>
                 </div>
+                <div class="form-group" id="song-public-playlist-group">
+                    <label for="song-public-playlist">Añadir a playlist pública (opcional)</label>
+                    <select id="song-public-playlist"><option value="">No añadir a ninguna playlist</option></select>
+                    <div class="playlist-quick-create" style="margin-top:8px">
+                        <input id="quick-public-playlist-name" type="text" maxlength="80" placeholder="O crea una nueva playlist">
+                        <button type="button" class="share-btn" onclick="quickCreatePublicPlaylist()">Crear</button>
+                    </div>
+                    <small style="color:var(--text-muted)">La canción se añadirá automáticamente a la playlist seleccionada al guardarla.</small>
+                </div>
                 <button type="submit" class="submit-btn" id="form-submit-btn" data-i18n="saveSong">Guardar Canción</button>
             </form>
         </div>
@@ -923,6 +967,8 @@
         let activePlaylistSongIds = null;
         let cachedMyPlaylists = [];
         let currentPlaylistId = null;
+        let cachedPublicPlaylists = [];
+        let currentPublicPlaylistId = null;
 
         const translations = {
             es: {connecting:'Conectando con Supabase…',aboutButton:'Sobre AtlasIKA',contact:'Contacto',explore:'Explora el atlas musical',allCountries:'-- Todos los países --',chooseLanguage:'-- Elige Idioma --',chooseStyle:'-- Elige Estilo --',clearFilter:'Limpiar filtro',searchSong:'Buscar canción...',liveConsole:'Consola en Directo',sunoPlayer:'Reproductor Suno',atlasPlayer:'Reproductor AtlasIKA',playingStatus:'Reproduciendo',pausedStatus:'En pausa',selectSong:'Selecciona una canción para empezar',previous:'Anterior',play:'Reproducir',pause:'Pausa',next:'Siguiente',radio:'Al terminar',endNext:'Siguiente canción',endRepeat:'Repetir canción',random:'Aleatorio',all:'Todas',newReleases:'Novedades',grid:'Cuadrícula',list:'Lista',top:'Arriba',aboutTitle:'Sobre AtlasIKA',aboutP1:'Somos dos amigos con una misma obsesión: la música. Si has acabado en este rincón de la red, lo más probable es que compartas esa misma pasión con nosotros.',aboutP2:'Disfrutamos componiendo, produciendo y dando forma a nuestras canciones aprovechando al máximo las herramientas de hoy en día. Sin grandes sellos, sin trampa ni cartón.',aboutP3:'Sin publicidad y sin interrupciones... Solo pura pasión por la música.',catalogManagement:'Gestión del Catálogo',addNew:'Añadir Nueva',edit:'Modificar',selectSongToEdit:'Selecciona la canción a modificar',chooseTrack:'-- Elige un tema --',songTitle:'Título de la canción',artist:'Artista / Intérprete',artistHelp:'AtlasIKA para nuestras canciones; artista original para canciones externas.',country:'País',songLanguage:'Idioma de la canción',styleGenre:'Estilo / Género',shortDescription:'Descripción corta',descriptionPlaceholder:'Describe brevemente esta canción...',coverUrl:'URL de la Portada',songUrl:'URL de la canción (MP3 o Suno)',saveSong:'Guardar Canción',linkCopied:'¡Enlace copiado al portapapeles!',noSongs:'No se encontraron canciones para esta selección.',playing:'SONANDO',new:'NUEVO',untitled:'Sin título',views:'reproducciones',suno:'Suno',audio:'Audio',comments:'Comentarios',songComments:'Comentarios de esta canción',aliasPlaceholder:'Tu alias (máx. 25 caracteres)',commentPlaceholder:'Escribe tu comentario (máx. 500 caracteres)',publishComment:'Publicar comentario',loadingComments:'Cargando comentarios…',noComments:'Todavía no hay comentarios. ¡Sé el primero!',commentLoadError:'No se pudieron cargar los comentarios. Comprueba la configuración de comentarios en Supabase.',playNow:'Reproducir',showDetails:'Mostrar detalles',adminActive:'Admin (Activo)',adminPassword:'Contraseña de administración:',wrongPassword:'Contraseña incorrecta.',saveNewSong:'Guardar Nueva Canción',updateSong:'Actualizar Canción',chooseTrackEdit:'-- Elige un tema a modificar --',selectTrackEdit:'Selecciona una canción de la lista para editar.',songAdded:'¡Canción añadida con éxito!',songUpdated:'¡Canción actualizada con éxito!',deleteConfirm:'¿Seguro que deseas eliminar esta canción?',commentPublished:'Comentario publicado. ¡Gracias por participar!',waitComment:'Espera 30 segundos antes de publicar otro comentario.',duplicateComment:'No puedes publicar dos comentarios consecutivos iguales.',commentFailed:'No se pudo publicar el comentario. ',viewsLabel:'reproducciones'},
@@ -990,6 +1036,7 @@
                 populateCountryFilter();
                 renderApp();
                 populateEditSelect();
+                loadPublicPlaylists();
 
                 const urlParams = new URLSearchParams(window.location.search);
                 const targetSongId = parseInt(urlParams.get('song'));
@@ -1842,24 +1889,34 @@ async function banChatUser(userId){
             document.getElementById('admin-modal').style.display = 'flex';
             renderChatAdminTools();
             renderApp();
+            renderPublicPlaylists();
+            renderAdminPublicPlaylists();
         }
 
         function setAdminMode(mode) {
             adminMode = mode;
-            document.getElementById('tab-add-btn').classList.toggle('active', mode === 'add');
-            document.getElementById('tab-edit-btn').classList.toggle('active', mode === 'edit');
-            
-            const selectGroup = document.getElementById('song-select-group');
-            const submitBtn = document.getElementById('form-submit-btn');
-
-            if (mode === 'add') {
-                selectGroup.style.display = 'none';
-                submitBtn.innerText = t("saveNewSong");
+            ['add','edit','playlists'].forEach(tab => {
+                const button=document.getElementById(`tab-${tab}-btn`);
+                if(button) button.classList.toggle('active', mode===tab);
+            });
+            const form=document.getElementById('add-song-form');
+            const playlistPanel=document.getElementById('admin-playlist-panel');
+            const selectGroup=document.getElementById('song-select-group');
+            const submitBtn=document.getElementById('form-submit-btn');
+            const isPlaylistMode=mode==='playlists';
+            form.hidden=isPlaylistMode;
+            playlistPanel.classList.toggle('active',isPlaylistMode);
+            if(isPlaylistMode){loadPublicPlaylists(true);return;}
+            if(mode==='add'){
+                selectGroup.style.display='none';
+                submitBtn.innerText=t("saveNewSong");
                 resetAdminForm();
-            } else {
-                selectGroup.style.display = 'block';
-                submitBtn.innerText = t("updateSong");
+                populatePublicPlaylistSelect();
+            }else{
+                selectGroup.style.display='block';
+                submitBtn.innerText=t("updateSong");
                 populateEditSelect();
+                populatePublicPlaylistSelect();
             }
         }
 
@@ -1901,6 +1958,10 @@ async function banChatUser(userId){
         function resetAdminForm() {
             document.getElementById('add-song-form').reset();
             document.getElementById('edit-song-id').value = '';
+            const playlistSelect=document.getElementById('song-public-playlist');
+            if(playlistSelect) playlistSelect.value='';
+            const quickName=document.getElementById('quick-public-playlist-name');
+            if(quickName) quickName.value='';
         }
 
         async function saveSong(event) {
@@ -1928,11 +1989,18 @@ async function banChatUser(userId){
                 audio_url: audioUrl
             };
 
+            let savedSongId=null;
             if (adminMode === 'add') {
                 songData.likes = 0;
                 songData.views = 0;
-                const { error } = await chatSupabaseClient.from('songs').insert([songData]);
+                const { data: insertedSong, error } = await chatSupabaseClient.from('songs').insert([songData]).select('id').single();
                 if (error) { alert("Error al guardar: " + error.message); return; }
+                savedSongId=insertedSong.id;
+                const playlistId=document.getElementById('song-public-playlist').value;
+                if(playlistId){
+                    const {error:linkError}=await chatSupabaseClient.from('atlasika_public_playlist_songs').insert({playlist_id:Number(playlistId),song_id:savedSongId});
+                    if(linkError){alert('La canción se guardó, pero no se pudo añadir a la playlist: '+linkError.message);}
+                }
                 alert(t("songAdded"));
             } else {
                 const editId = parseInt(document.getElementById('edit-song-id').value);
@@ -1940,6 +2008,11 @@ async function banChatUser(userId){
 
                 const { error } = await chatSupabaseClient.from('songs').update(songData).eq('id', editId);
                 if (error) { alert("Error al actualizar: " + error.message); return; }
+                const playlistId=document.getElementById('song-public-playlist').value;
+                if(playlistId){
+                    const {error:linkError}=await chatSupabaseClient.from('atlasika_public_playlist_songs').insert({playlist_id:Number(playlistId),song_id:editId});
+                    if(linkError && linkError.code!=='23505'){alert('La canción se actualizó, pero no se pudo añadir a la playlist: '+linkError.message);return;}
+                }
                 alert(t("songUpdated"));
             }
 
@@ -1955,6 +2028,112 @@ async function banChatUser(userId){
                 if (error) { alert("Error: " + error.message); return; }
             fetchSongsFromCloud();
             }
+        }
+
+        // PLAYLISTS PÚBLICAS: lectura para visitantes; escritura validada por RLS y is_chat_admin().
+        async function loadPublicPlaylists(forAdmin=false){
+            const {data,error}=await chatSupabaseClient.from('atlasika_public_playlists')
+                .select('id,name,description,is_published,created_at')
+                .order('created_at',{ascending:false});
+            if(error){
+                console.error('Public playlists:',error);
+                const msg='Las playlists públicas aún no están configuradas. Ejecuta el SQL de AtlasIKA para playlists públicas en Supabase.';
+                const publicRoot=document.getElementById('public-playlists-list');
+                if(publicRoot) publicRoot.innerHTML=`<p class="playlist-note">${escapeHtml(msg)}</p>`;
+                const adminRoot=document.getElementById('admin-public-playlists-list');
+                if(adminRoot) adminRoot.innerHTML=`<p class="playlist-note">${escapeHtml(msg)}</p>`;
+                return;
+            }
+            cachedPublicPlaylists=data||[];
+            renderPublicPlaylists();
+            renderAdminPublicPlaylists();
+            populatePublicPlaylistSelect();
+        }
+        function renderPublicPlaylists(){
+            const root=document.getElementById('public-playlists-list');if(!root)return;
+            const visible=cachedPublicPlaylists.filter(p=>p.is_published||isChatAdmin);
+            if(!visible.length){root.innerHTML='<p class="playlist-note">Todavía no hay playlists públicas.</p>';return;}
+            root.innerHTML=visible.map(p=>`<article class="public-playlist-card"><h3>${escapeHtml(p.name)}</h3>${p.description?`<p>${escapeHtml(p.description)}</p>`:''}<button type="button" class="load-to-player-btn" onclick="playPublicPlaylist(${Number(p.id)})"><i class="fa-solid fa-play"></i> Escuchar</button>${isChatAdmin?` <span class="playlist-note">${p.is_published?'Publicada':'Borrador'}</span>`:''}</article>`).join('');
+        }
+        function renderAdminPublicPlaylists(){
+            const root=document.getElementById('admin-public-playlists-list');if(!root)return;
+            if(!isChatAdmin){root.innerHTML='<p class="playlist-note">Solo el administrador puede gestionar playlists.</p>';return;}
+            if(!cachedPublicPlaylists.length){root.innerHTML='<p class="playlist-note">Aún no has creado playlists.</p>';return;}
+            root.innerHTML=cachedPublicPlaylists.map(p=>`<div class="admin-playlist-row"><div><strong>${escapeHtml(p.name)}</strong><div class="playlist-note">${p.is_published?'Publicada':'Borrador'}${p.description?' · '+escapeHtml(p.description):''}</div></div><div class="admin-playlist-actions"><button class="share-btn" onclick="togglePublicPlaylistPublish(${Number(p.id)},${!p.is_published})">${p.is_published?'Ocultar':'Publicar'}</button><button class="share-btn" onclick="renamePublicPlaylist(${Number(p.id)})">Renombrar</button><button class="share-btn" onclick="managePublicPlaylistSongs(${Number(p.id)})">Canciones</button><button class="share-btn" onclick="deletePublicPlaylist(${Number(p.id)})">Eliminar</button></div></div>`).join('');
+        }
+        function populatePublicPlaylistSelect(){
+            const select=document.getElementById('song-public-playlist');if(!select)return;
+            const current=select.value;
+            select.innerHTML='<option value="">No añadir a ninguna playlist</option>'+cachedPublicPlaylists.filter(p=>p.is_published).map(p=>`<option value="${Number(p.id)}">${escapeHtml(p.name)}</option>`).join('');
+            if([...select.options].some(o=>o.value===current))select.value=current;
+        }
+        async function savePublicPlaylist(event){
+            event.preventDefault();if(!isChatAdmin){alert('Se requieren permisos de administrador.');return;}
+            const name=document.getElementById('public-playlist-name').value.trim();
+            const description=document.getElementById('public-playlist-description').value.trim();
+            if(!name)return;
+            const {error}=await chatSupabaseClient.from('atlasika_public_playlists').insert({name:name.slice(0,80),description:description.slice(0,180),is_published:document.getElementById('public-playlist-published').checked});
+            if(error){alert('No se pudo crear la playlist: '+error.message);return;}
+            document.getElementById('admin-public-playlist-form').reset();
+            await loadPublicPlaylists(true);
+            alert('Playlist pública creada.');
+        }
+        async function quickCreatePublicPlaylist(){
+            if(!isChatAdmin)return;
+            const input=document.getElementById('quick-public-playlist-name');
+            const name=input.value.trim();if(!name){alert('Escribe el nombre de la nueva playlist.');input.focus();return;}
+            const {data,error}=await chatSupabaseClient.from('atlasika_public_playlists').insert({name:name.slice(0,80),description:'',is_published:true}).select('id,name,is_published').single();
+            if(error){alert('No se pudo crear la playlist: '+error.message);return;}
+            await loadPublicPlaylists();
+            document.getElementById('song-public-playlist').value=String(data.id);
+            input.value='';
+            alert('Playlist creada y seleccionada. La canción se añadirá al guardarla.');
+        }
+        async function togglePublicPlaylistPublish(id,published){
+            if(!isChatAdmin)return;
+            const {error}=await chatSupabaseClient.from('atlasika_public_playlists').update({is_published:published}).eq('id',id);
+            if(error){alert('No se pudo actualizar: '+error.message);return;}await loadPublicPlaylists(true);
+        }
+        async function renamePublicPlaylist(id){
+            if(!isChatAdmin)return;
+            const p=cachedPublicPlaylists.find(x=>Number(x.id)===Number(id));if(!p)return;
+            const name=prompt('Nuevo nombre de la playlist:',p.name);if(!name||!name.trim())return;
+            const {error}=await chatSupabaseClient.from('atlasika_public_playlists').update({name:name.trim().slice(0,80)}).eq('id',id);
+            if(error){alert('No se pudo renombrar: '+error.message);return;}await loadPublicPlaylists(true);
+        }
+        async function deletePublicPlaylist(id){
+            if(!isChatAdmin||!confirm('¿Eliminar esta playlist pública y su lista de canciones?'))return;
+            const {error}=await chatSupabaseClient.from('atlasika_public_playlists').delete().eq('id',id);
+            if(error){alert('No se pudo eliminar: '+error.message);return;}
+            if(Number(currentPublicPlaylistId)===Number(id)){currentPublicPlaylistId=null;document.getElementById('public-playlist-songs-view').hidden=true;}
+            await loadPublicPlaylists(true);
+        }
+        async function managePublicPlaylistSongs(id){
+            if(!isChatAdmin)return;
+            const p=cachedPublicPlaylists.find(x=>Number(x.id)===Number(id));if(!p)return;
+            const {data,error}=await chatSupabaseClient.from('atlasika_public_playlist_songs').select('song_id,added_at').eq('playlist_id',id).order('added_at',{ascending:true});
+            if(error){alert('No se pudo abrir la playlist: '+error.message);return;}
+            const rows=(data||[]).map(item=>{const song=songsCache.find(x=>String(x.id)===String(item.song_id));return song?`<div class="playlist-song-row"><span>${escapeHtml(song.title)} — ${escapeHtml(song.artist||'AtlasIKA')}</span><button class="share-btn" onclick="removeSongFromPublicPlaylist(${Number(id)},${Number(song.id)})">Quitar</button></div>`:''}).join('');
+            const view=document.getElementById('public-playlist-songs-view');view.hidden=false;
+            view.innerHTML=`<h3>${escapeHtml(p.name)}</h3>${rows||'<p class="playlist-note">Esta playlist está vacía.</p>'}`;
+            view.scrollIntoView({behavior:'smooth',block:'nearest'});
+        }
+        async function removeSongFromPublicPlaylist(playlistId,songId){
+            if(!isChatAdmin)return;
+            const {error}=await chatSupabaseClient.from('atlasika_public_playlist_songs').delete().eq('playlist_id',playlistId).eq('song_id',songId);
+            if(error){alert('No se pudo quitar la canción: '+error.message);return;}await managePublicPlaylistSongs(playlistId);
+        }
+        async function playPublicPlaylist(id){
+            const p=cachedPublicPlaylists.find(x=>Number(x.id)===Number(id));
+            if(!p||(!p.is_published&&!isChatAdmin))return;
+            const {data,error}=await chatSupabaseClient.from('atlasika_public_playlist_songs').select('song_id,added_at').eq('playlist_id',id).order('added_at',{ascending:true});
+            if(error){alert('No se pudo reproducir la playlist: '+error.message);return;}
+            activePlaylistSongIds=(data||[]).map(x=>String(x.song_id)).filter(songId=>songsCache.some(song=>String(song.id)===songId));
+            if(!activePlaylistSongIds.length){alert('Esta playlist todavía no contiene canciones.');activePlaylistSongIds=null;return;}
+            currentPublicPlaylistId=id;
+            const view=document.getElementById('public-playlist-songs-view');
+            view.hidden=false;view.innerHTML=`<h3>${escapeHtml(p.name)}</h3><p class="playlist-note">${activePlaylistSongIds.length} canciones</p>`;
+            renderApp();loadSongToPlayer(0,true);
         }
 
         // CUENTAS: el chat y la cuenta comparten el cliente Auth para que el ID
