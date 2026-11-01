@@ -541,6 +541,22 @@
         .atlas-footer button:hover,.atlas-footer a:hover{text-decoration:underline}
         .legal-content{max-height:65vh;overflow:auto;color:var(--text-muted);line-height:1.6;text-align:left;padding-right:5px}
         .legal-content h3{color:var(--accent-primary);margin:14px 0 5px}.legal-content p,.legal-content li{margin-bottom:8px}
+
+        .account-modal-content{max-width:520px}
+        .account-status-note,.playlist-note{color:var(--text-muted);line-height:1.5;margin:10px 0 16px}
+        .account-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+        .account-actions button{padding:8px 12px}
+        .song-link-help{margin-top:10px;padding:10px 12px;border:1px solid var(--border-color);border-radius:10px;background:rgba(255,255,255,.03);color:var(--text-muted)}
+        .song-link-help summary{cursor:pointer;color:var(--accent-primary);font-weight:700}
+        .song-link-help ol{padding-left:22px;margin:10px 0}.song-link-help li,.song-link-help p{margin:5px 0;line-height:1.45}
+        .my-playlists-panel{width:100%;max-width:1200px;margin:0 auto 22px;padding:18px;background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;z-index:2}
+        .playlist-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.playlist-panel-heading h2{font-size:1.15rem;color:var(--accent-primary)}
+        .playlist-item{padding:12px;margin:10px 0;border:1px solid var(--border-color);border-radius:12px;background:rgba(0,0,0,.18)}
+        .playlist-item-head,.playlist-song-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+        .playlist-item-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.playlist-item-actions button,.playlist-song-row button{padding:6px 10px}
+        .playlist-songs-view{margin-top:12px;padding-top:12px;border-top:1px solid var(--border-color)}
+        .playlist-song-row{padding:7px 0;border-bottom:1px solid var(--border-color)}
+        [hidden]{display:none!important}
     </style>
 </head>
 <body>
@@ -558,6 +574,7 @@
             <button class="about-btn" id="about-btn" data-i18n="aboutButton" onclick="openAboutModal()">
                 <i class="fa-solid fa-circle-info"></i> <span data-i18n="aboutButton">Sobre AtlasIKA</span>
             </button>
+            <button class="contact-btn" id="account-open-btn" type="button" onclick="openAccountModal()"><i class="fa-solid fa-user"></i> <span id="account-button-label">Account</span></button>
             <a href="mailto:ikamusicstudios@gmail.com" class="contact-btn">
                 <i class="fa-solid fa-envelope"></i> <span data-i18n="contact">Contacto</span>
             </a>
@@ -580,6 +597,7 @@
                 <option value="Griego">Griego</option>
                 <option value="Turco">Turco</option>
                 <option value="Ruso">Ruso</option>
+                <option value="Other">Other</option>
             </select>
 
             <select id="select-style" class="interactive-select" disabled onchange="handleStyleChange()">
@@ -674,6 +692,15 @@
         </div>
     </div>
 
+    <!-- PLAYLISTS PRIVADAS: solo visibles para la cuenta autenticada -->
+    <section id="my-playlists-panel" class="my-playlists-panel" hidden>
+        <div class="playlist-panel-heading"><h2><i class="fa-solid fa-list-music"></i> My playlists</h2><button type="button" class="load-to-player-btn" onclick="createMyPlaylist()">+ Create playlist</button></div>
+        <p id="playlist-account-note" class="playlist-note">Your playlists are private to your account.</p>
+        <div id="my-playlists-list"></div>
+        <div id="playlist-songs-view" class="playlist-songs-view" hidden></div>
+        <button type="button" id="exit-playlist-btn" class="share-btn" onclick="exitPlaylistPlayback()" hidden>Back to all songs</button>
+    </section>
+
     <!-- LISTADO DE CANCIONES (VISTA LISTA POR DEFECTO) -->
     <div class="container" id="songs-container">
         <p style="text-align: center; color: var(--text-muted);" data-i18n="connecting">Conectando con Supabase...</p>
@@ -747,6 +774,34 @@
         </div>
     </div>
 
+    <!-- CUENTA: registro, inicio de sesión, recuperación y cambio de contraseña -->
+    <div class="modal" id="account-modal" role="dialog" aria-modal="true" aria-labelledby="account-modal-title">
+        <div class="modal-content account-modal-content">
+            <button class="close-modal" onclick="closeModal('account-modal')">&times;</button>
+            <h2 id="account-modal-title">AtlasIKA account</h2>
+            <p id="account-status-note" class="account-status-note">Create an account to save private playlists. Listening remains public.</p>
+            <form id="account-auth-form" onsubmit="submitAccountAuth(event)">
+                <div class="form-group"><label for="account-email">Email</label><input id="account-email" type="email" autocomplete="email" required></div>
+                <div class="form-group"><label for="account-password">Password</label><input id="account-password" type="password" autocomplete="current-password" minlength="8" required></div>
+                <div class="form-group" id="account-confirm-group" hidden><label for="account-confirm-password">Confirm password</label><input id="account-confirm-password" type="password" autocomplete="new-password" minlength="8"></div>
+                <button type="submit" class="submit-btn" id="account-submit-btn">Sign in</button>
+            </form>
+            <div class="account-actions">
+                <button type="button" class="share-btn" onclick="setAccountMode('login')">Sign in</button>
+                <button type="button" class="share-btn" onclick="setAccountMode('register')">Create account</button>
+                <button type="button" class="share-btn" onclick="requestPasswordReset()">Forgot password?</button>
+                <button type="button" class="share-btn" onclick="showPasswordChange()">Change password</button>
+                <button type="button" class="share-btn" id="account-signout-btn" onclick="signOutAccount()" hidden>Sign out</button>
+            </div>
+            <form id="account-password-change-form" onsubmit="changeAccountPassword(event)" hidden>
+                <h3>Set a new password</h3>
+                <div class="form-group"><label for="account-new-password">New password</label><input id="account-new-password" type="password" minlength="8" autocomplete="new-password" required></div>
+                <div class="form-group"><label for="account-new-password-confirm">Confirm new password</label><input id="account-new-password-confirm" type="password" minlength="8" autocomplete="new-password" required></div>
+                <button type="submit" class="submit-btn">Update password</button>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL ADMIN ADAPTADO (AÑADIR / MODIFICAR) -->
     <div class="modal" id="admin-modal">
         <div class="modal-content">
@@ -795,6 +850,7 @@
                         <option value="Griego">Griego</option>
                         <option value="Turco">Turco</option>
                         <option value="Ruso">Ruso</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -822,7 +878,10 @@
                 </div>
                 <div class="form-group">
                     <label data-i18n="songUrl">URL de la canción (MP3 o Suno)</label>
-                    <input type="url" id="song-audio" required placeholder="https://suno.com/s/... o URL MP3">
+                    <input type="url" id="song-audio" required placeholder="https://suno.com/s/... or direct MP3 URL">
+                    <small style="color:var(--text-muted);display:block;margin-top:6px;">Use a valid Suno song page URL or a direct MP3 link that plays without signing in.</small>
+                    <details class="song-link-help"><summary>How to copy a Suno song link</summary><ol><li>Open Suno in your computer browser.</li><li>Open the song's own page by clicking its title.</li><li>Copy the complete address from the browser address bar.</li><li>Paste it into the Song URL field above.</li></ol><p>Alternative: copy the full page address manually from the browser address bar.</p></details>
+                    <details class="song-link-help"><summary>How to add an MP3 link</summary><ol><li>Upload the MP3 file to a cloud storage service.</li><li>Make sure the file is publicly accessible.</li><li>Copy the direct link to the MP3 file.</li><li>Paste it into the Song URL field above.</li></ol><p>The link must open the audio file directly and allow playback without signing in. Do not paste a folder link or a page that requires a login.</p></details>
                 </div>
                 <button type="submit" class="submit-btn" id="form-submit-btn" data-i18n="saveSong">Guardar Canción</button>
             </form>
@@ -837,7 +896,7 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         // Cliente independiente para autenticación anónima, chat y propuestas.
         // Así no cambiamos el rol de la sesión pública que usa el reproductor y el catálogo.
-        const chatSupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { storageKey: 'atlasika-chat-auth-token', persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } });
+        const chatSupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { storageKey: 'atlasika-chat-auth-token', persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
 
         let isAdmin = false;
         let adminMode = 'add';
@@ -860,6 +919,10 @@
         let chatOnlineCount = 0;
         let chatReady = false;
         let chatRefreshTimer = null;
+        let accountAuthMode = 'login';
+        let activePlaylistSongIds = null;
+        let cachedMyPlaylists = [];
+        let currentPlaylistId = null;
 
         const translations = {
             es: {connecting:'Conectando con Supabase…',aboutButton:'Sobre AtlasIKA',contact:'Contacto',explore:'Explora el atlas musical',allCountries:'-- Todos los países --',chooseLanguage:'-- Elige Idioma --',chooseStyle:'-- Elige Estilo --',clearFilter:'Limpiar filtro',searchSong:'Buscar canción...',liveConsole:'Consola en Directo',sunoPlayer:'Reproductor Suno',atlasPlayer:'Reproductor AtlasIKA',playingStatus:'Reproduciendo',pausedStatus:'En pausa',selectSong:'Selecciona una canción para empezar',previous:'Anterior',play:'Reproducir',pause:'Pausa',next:'Siguiente',radio:'Al terminar',endNext:'Siguiente canción',endRepeat:'Repetir canción',random:'Aleatorio',all:'Todas',newReleases:'Novedades',grid:'Cuadrícula',list:'Lista',top:'Arriba',aboutTitle:'Sobre AtlasIKA',aboutP1:'Somos dos amigos con una misma obsesión: la música. Si has acabado en este rincón de la red, lo más probable es que compartas esa misma pasión con nosotros.',aboutP2:'Disfrutamos componiendo, produciendo y dando forma a nuestras canciones aprovechando al máximo las herramientas de hoy en día. Sin grandes sellos, sin trampa ni cartón.',aboutP3:'Sin publicidad y sin interrupciones... Solo pura pasión por la música.',catalogManagement:'Gestión del Catálogo',addNew:'Añadir Nueva',edit:'Modificar',selectSongToEdit:'Selecciona la canción a modificar',chooseTrack:'-- Elige un tema --',songTitle:'Título de la canción',artist:'Artista / Intérprete',artistHelp:'AtlasIKA para nuestras canciones; artista original para canciones externas.',country:'País',songLanguage:'Idioma de la canción',styleGenre:'Estilo / Género',shortDescription:'Descripción corta',descriptionPlaceholder:'Describe brevemente esta canción...',coverUrl:'URL de la Portada',songUrl:'URL de la canción (MP3 o Suno)',saveSong:'Guardar Canción',linkCopied:'¡Enlace copiado al portapapeles!',noSongs:'No se encontraron canciones para esta selección.',playing:'SONANDO',new:'NUEVO',untitled:'Sin título',views:'reproducciones',suno:'Suno',audio:'Audio',comments:'Comentarios',songComments:'Comentarios de esta canción',aliasPlaceholder:'Tu alias (máx. 25 caracteres)',commentPlaceholder:'Escribe tu comentario (máx. 500 caracteres)',publishComment:'Publicar comentario',loadingComments:'Cargando comentarios…',noComments:'Todavía no hay comentarios. ¡Sé el primero!',commentLoadError:'No se pudieron cargar los comentarios. Comprueba la configuración de comentarios en Supabase.',playNow:'Reproducir',showDetails:'Mostrar detalles',adminActive:'Admin (Activo)',adminPassword:'Contraseña de administración:',wrongPassword:'Contraseña incorrecta.',saveNewSong:'Guardar Nueva Canción',updateSong:'Actualizar Canción',chooseTrackEdit:'-- Elige un tema a modificar --',selectTrackEdit:'Selecciona una canción de la lista para editar.',songAdded:'¡Canción añadida con éxito!',songUpdated:'¡Canción actualizada con éxito!',deleteConfirm:'¿Seguro que deseas eliminar esta canción?',commentPublished:'Comentario publicado. ¡Gracias por participar!',waitComment:'Espera 30 segundos antes de publicar otro comentario.',duplicateComment:'No puedes publicar dos comentarios consecutivos iguales.',commentFailed:'No se pudo publicar el comentario. ',viewsLabel:'reproducciones'},
@@ -868,6 +931,16 @@
         };
 
         function t(key) { return (translations[interfaceLanguage] || translations.es)[key] || translations.es[key] || key; }
+
+        chatSupabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'PASSWORD_RECOVERY') {
+                document.getElementById('account-modal').style.display = 'flex';
+                document.getElementById('account-password-change-form').hidden = false;
+                document.getElementById('account-auth-form').hidden = true;
+                document.getElementById('account-status-note').textContent = 'Enter and confirm your new password.';
+            }
+            setTimeout(() => updateAccountButton(session?.user || null), 0);
+        });
         const extraUiText={
             es:{showLyrics:'Ver letra',hideLyrics:'Ocultar letra',lyricsAvailable:'Letra disponible',collabTitle:'Comparte tu canción',collabIntro:'¿Eres creador en Suno? Envía tu canción a AtlasIKA. Tu propuesta quedará pendiente y solo se publicará cuando el administrador la apruebe.',collabNickname:'Tu nombre artístico',collabSongTitle:'Título de la canción',collabCountry:'País',collabLanguage:'Idioma',collabStyle:'Estilo musical',collabUrl:'Enlace de Suno',collabCover:'Enlace de portada (opcional)',collabDescription:'Descripción breve (opcional)',collabLyrics:'Letra (opcional)',collabSend:'Enviar canción para revisión',collabMy:'Tus propuestas aparecerán aquí.',collabAdmin:'Propuestas pendientes de revisión',collabPending:'Pendiente',collabApproved:'Aprobada',collabRejected:'Rechazada',collabSent:'Tu canción se ha enviado. Queda pendiente de aprobación.',collabBadUrl:'Introduce un enlace válido de Suno (suno.com/s/ o suno.com/song/...).',collabError:'No se pudo enviar la propuesta: ',collabApprove:'Aprobar',collabReject:'Rechazar',collabNoPending:'No hay propuestas pendientes.',collabReviewError:'No se pudo actualizar la propuesta: ',collabReviewConfirm:'¿Seguro que quieres ',collabApproveVerb:'aprobar',collabRejectVerb:'rechazar',lyricsLabel:'Letra de la canción'},
             en:{showLyrics:'Show lyrics',hideLyrics:'Hide lyrics',lyricsAvailable:'Lyrics available',collabTitle:'Share your song',collabIntro:'Are you a Suno creator? Submit your song to AtlasIKA. It will remain pending until an administrator approves it.',collabNickname:'Artist name',collabSongTitle:'Song title',collabCountry:'Country',collabLanguage:'Language',collabStyle:'Music style',collabUrl:'Suno link',collabCover:'Cover image URL (optional)',collabDescription:'Short description (optional)',collabLyrics:'Lyrics (optional)',collabSend:'Submit song for review',collabMy:'Your submissions will appear here.',collabAdmin:'Submissions awaiting review',collabPending:'Pending',collabApproved:'Approved',collabRejected:'Rejected',collabSent:'Your song was submitted and is awaiting approval.',collabBadUrl:'Enter a valid Suno link (suno.com/s/ or suno.com/song/...).',collabError:'Could not submit: ',collabApprove:'Approve',collabReject:'Reject',collabNoPending:'There are no pending submissions.',collabReviewError:'Could not update submission: ',collabReviewConfirm:'Are you sure you want to ',collabApproveVerb:'approve',collabRejectVerb:'reject',lyricsLabel:'Song lyrics'},
@@ -1172,7 +1245,10 @@
                 option.textContent = country;
                 select.appendChild(option);
             });
-            select.value = countries.includes(previous) ? previous : '';
+            const otherOption = document.createElement('option');
+            otherOption.value = 'Other'; otherOption.textContent = 'Other';
+            if (!countries.includes('Other')) select.appendChild(otherOption);
+            select.value = countries.includes(previous) || previous === 'Other' ? previous : '';
             selectedCountry = select.value;
         }
 
@@ -1241,6 +1317,9 @@
         }
 
         function getFilteredSongs() {
+            if (Array.isArray(activePlaylistSongIds)) {
+                return activePlaylistSongIds.map(id => songsCache.find(song => String(song.id) === String(id))).filter(Boolean);
+            }
             return songsCache.filter((song, index) => {
                 let matchesFilter = true;
                 if (currentFilter === 'novedades') matchesFilter = index < 3;
@@ -1309,13 +1388,16 @@
             container.classList.toggle('grid-view', !isListView);
         }
 
-        function shareSong(songId) {
-            const shareUrl = `${window.location.origin}${window.location.pathname}?song=${songId}`;
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                const toast = document.getElementById('toast');
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 2500);
-            });
+        async function shareSong(songId) {
+            const shareUrl = `${window.location.origin}${window.location.pathname}?song=${encodeURIComponent(songId)}`;
+            try {
+                if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(shareUrl);
+                else {
+                    const helper=document.createElement('textarea');helper.value=shareUrl;helper.style.position='fixed';helper.style.opacity='0';document.body.appendChild(helper);helper.select();
+                    const copied=document.execCommand('copy');helper.remove();if(!copied)throw new Error('Clipboard access is unavailable');
+                }
+                const toast = document.getElementById('toast');toast.classList.add('show');setTimeout(() => toast.classList.remove('show'), 2500);
+            } catch(error) { console.error('Copy song link:',error);prompt('Copy this song link:',shareUrl); }
         }
 
         function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -1467,6 +1549,7 @@
                         </div>
                         <div class="song-actions-row">
                             <button class="load-to-player-btn" onclick="playSongById(${JSON.stringify(song.id)})"><i class="fa-solid fa-play"></i> ${escapeHtml(t('playNow'))}</button>
+                            <button class="share-btn" onclick="addSongToMyPlaylist(${JSON.stringify(song.id)})" title="Add to my playlist"><i class="fa-solid fa-list"></i> Add to playlist</button>
                             <button class="like-btn" onclick="likeSong(${JSON.stringify(song.id)})"><i class="fa-solid fa-heart"></i> ${song.likes || 0}</button>
                             <button class="share-btn" onclick="shareSong(${JSON.stringify(song.id)})" aria-label="Share"><i class="fa-solid fa-share-nodes"></i></button>
                             <button class="share-btn" onclick="toggleComments(${JSON.stringify(song.id)})" title="${escapeHtml(t('comments'))}"><i class="fa-regular fa-comments"></i> ${escapeHtml(t('comments'))}</button>
@@ -1530,6 +1613,7 @@
                     session=result.data.session;
                 }
                 chatUser=session.user;
+                updateAccountButton(chatUser);
                 const {data:ban}=await chatSupabaseClient.from('chat_bans').select('user_id').eq('user_id',chatUser.id).maybeSingle();
                 if(ban){document.getElementById('chat-message-input').disabled=true;document.getElementById('chat-send-button').disabled=true;document.getElementById('chat-note').textContent=ctext('banned');}
                 const adminCheck=await chatSupabaseClient.rpc('is_chat_admin');
@@ -1825,6 +1909,13 @@ async function banChatUser(userId){
             
             const lang = document.getElementById('song-lang-input').value;
             const style = document.getElementById('song-style-input').value;
+            const audioUrl = document.getElementById('song-audio').value.trim();
+            let parsedAudioUrl;
+            try { parsedAudioUrl = new URL(audioUrl); } catch (_) { alert('Enter a valid song URL.'); return; }
+            const isSunoUrl = /^(?:www\.)?suno\.com$/i.test(parsedAudioUrl.hostname) && /^\/(?:s|song|embed)\/[A-Za-z0-9-]+\/?$/i.test(parsedAudioUrl.pathname);
+            let decodedPath=''; try { decodedPath=decodeURIComponent(parsedAudioUrl.pathname); } catch (_) { alert('The song URL contains invalid encoding.'); return; }
+            const isDirectMp3 = /^https?:$/.test(parsedAudioUrl.protocol) && /\.mp3$/i.test(decodedPath);
+            if (parsedAudioUrl.protocol !== 'https:' || (!isSunoUrl && !isDirectMp3)) { alert('The song link must be a valid Suno song page or a direct HTTPS MP3 link ending in .mp3.'); return; }
 
             const songData = {
                 title: document.getElementById('song-title').value,
@@ -1834,7 +1925,7 @@ async function banChatUser(userId){
                 lyrics: document.getElementById('song-lyrics-input').value.trim(),
                 genre: `${lang} - ${style}`,
                 cover_url: document.getElementById('song-cover').value,
-                audio_url: document.getElementById('song-audio').value
+                audio_url: audioUrl
             };
 
             if (adminMode === 'add') {
@@ -1865,6 +1956,159 @@ async function banChatUser(userId){
             fetchSongsFromCloud();
             }
         }
+
+        // CUENTAS: el chat y la cuenta comparten el cliente Auth para que el ID
+        // autenticado sea también el que Supabase comprueba en las políticas RLS.
+        function openAccountModal(){
+            document.getElementById('account-modal').style.display='flex';
+            setAccountMode('login');
+            updateAccountButton();
+        }
+        function setAccountMode(mode){
+            accountAuthMode=mode;
+            document.getElementById('account-auth-form').hidden=false;
+            document.getElementById('account-password-change-form').hidden=true;
+            document.getElementById('account-confirm-group').hidden=mode!=='register';
+            document.getElementById('account-password').autocomplete=mode==='register'?'new-password':'current-password';
+            document.getElementById('account-submit-btn').textContent=mode==='register'?'Create account':'Sign in';
+            document.getElementById('account-status-note').textContent=mode==='register'?'Create an account with your email and a password of at least 8 characters. Email confirmation may be required.':'Sign in to manage your private playlists. Listening to AtlasIKA remains public.';
+        }
+        async function updateAccountButton(user=null){
+            try{if(!user){const {data}=await chatSupabaseClient.auth.getSession();user=data.session?.user||null;}
+                const permanent=!!user&&!user.is_anonymous;
+                document.getElementById('account-button-label').textContent=permanent?(user.email||'My account'):'Account';
+                document.getElementById('account-signout-btn').hidden=!permanent;
+                document.getElementById('my-playlists-panel').hidden=!permanent;
+                if(permanent) await loadMyPlaylists(); else {cachedMyPlaylists=[];document.getElementById('my-playlists-list').innerHTML='';}
+            }catch(e){console.warn('Account UI:',e);}
+        }
+        async function submitAccountAuth(event){
+            event.preventDefault();
+            const email=document.getElementById('account-email').value.trim();
+            const password=document.getElementById('account-password').value;
+            if(password.length<8){alert('Use a password with at least 8 characters.');return;}
+            const button=document.getElementById('account-submit-btn');button.disabled=true;
+            try{
+                if(accountAuthMode==='register'){
+                    const confirm=document.getElementById('account-confirm-password').value;
+                    if(password!==confirm){alert('The passwords do not match.');return;}
+                    const {data:{session}}=await chatSupabaseClient.auth.getSession();
+                    if(session?.user?.is_anonymous){
+                        const {error}=await chatSupabaseClient.auth.updateUser({email});
+                        if(error)throw error;
+                        document.getElementById('account-status-note').textContent='We sent a confirmation email. Confirm your email address, return to AtlasIKA, then choose “Change password” to set your password. Your existing chat identity is preserved.';
+                        document.getElementById('account-password-change-form').hidden=true;
+                        document.getElementById('account-auth-form').hidden=false;
+                    }else{
+                        const {data,error}=await chatSupabaseClient.auth.signUp({email,password,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
+                        if(error)throw error;
+                        document.getElementById('account-status-note').textContent=data.session?'Account created. You are signed in.':'Account created. Check your email to confirm it, then return here and sign in.';
+                        if(data.session){chatUser=data.user;updateAccountButton(data.user);setTimeout(()=>window.location.reload(),700);}
+                    }
+                }else{
+                    const {data,error}=await chatSupabaseClient.auth.signInWithPassword({email,password});
+                    if(error)throw error;
+                    chatUser=data.user;await updateAccountButton(data.user);window.location.reload();
+                }
+            }catch(error){console.error(error);alert('Account error: '+(error.message||'Please try again.'));}
+            finally{button.disabled=false;}
+        }
+        async function requestPasswordReset(){
+            const email=document.getElementById('account-email').value.trim();
+            if(!email){alert('Enter your account email first.');document.getElementById('account-email').focus();return;}
+            const {error}=await chatSupabaseClient.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
+            if(error){alert('Could not send the recovery email: '+error.message);return;}
+            document.getElementById('account-status-note').textContent='If an account exists for this email, a password recovery link has been sent. Check your inbox.';
+        }
+        function showPasswordChange(){
+            document.getElementById('account-password-change-form').hidden=false;
+            document.getElementById('account-auth-form').hidden=true;
+            document.getElementById('account-status-note').textContent='You must be signed in to change your password. For a forgotten password, use Forgot password.';
+        }
+        async function changeAccountPassword(event){
+            event.preventDefault();
+            const a=document.getElementById('account-new-password').value,b=document.getElementById('account-new-password-confirm').value;
+            if(a.length<8||a!==b){alert('Passwords must match and contain at least 8 characters.');return;}
+            const {data:{session}}=await chatSupabaseClient.auth.getSession();
+            if(!session){alert('Sign in or use Forgot password first.');return;}
+            const {error}=await chatSupabaseClient.auth.updateUser({password:a});
+            if(error){alert('Could not update password: '+error.message);return;}
+            document.getElementById('account-status-note').textContent='Your password has been updated.';
+            document.getElementById('account-password-change-form').reset();
+            document.getElementById('account-password-change-form').hidden=true;
+            document.getElementById('account-auth-form').hidden=false;
+        }
+        async function signOutAccount(){
+            const {error}=await chatSupabaseClient.auth.signOut();
+            if(error){alert('Could not sign out: '+error.message);return;}
+            window.location.reload();
+        }
+        async function requirePermanentAccount(){
+            const {data:{session}}=await chatSupabaseClient.auth.getSession();
+            if(!session||session.user.is_anonymous){alert('Create an account or sign in to use private playlists.');openAccountModal();return null;}
+            return session.user;
+        }
+        async function loadMyPlaylists(){
+            const user=await requirePermanentAccount();if(!user)return;
+            const {data,error}=await chatSupabaseClient.from('atlasika_playlists').select('id,name,created_at').eq('user_id',user.id).order('created_at',{ascending:false});
+            if(error){console.error('Playlists:',error);document.getElementById('my-playlists-list').innerHTML='<p class="playlist-note">Playlists are not configured yet. The administrator must run the AtlasIKA security SQL script in Supabase.</p>';return;}
+            cachedMyPlaylists=data||[];renderMyPlaylists();
+        }
+        function renderMyPlaylists(){
+            const root=document.getElementById('my-playlists-list');if(!root)return;
+            if(!cachedMyPlaylists.length){root.innerHTML='<p class="playlist-note">You have no playlists yet. Create your first one.</p>';return;}
+            root.innerHTML=cachedMyPlaylists.map(p=>`<div class="playlist-item"><div class="playlist-item-head"><strong>${escapeHtml(p.name)}</strong><span class="playlist-note">Private</span></div><div class="playlist-item-actions"><button class="load-to-player-btn" onclick="openPlaylist(${Number(p.id)})">Open</button><button class="share-btn" onclick="playPlaylist(${Number(p.id)})">Play playlist</button><button class="share-btn" onclick="renameMyPlaylist(${Number(p.id)})">Rename</button><button class="share-btn" onclick="deleteMyPlaylist(${Number(p.id)})">Delete</button></div></div>`).join('');
+        }
+        async function createMyPlaylist(){
+            const user=await requirePermanentAccount();if(!user)return;
+            const name=prompt('Name your playlist:');if(!name||!name.trim())return;
+            const {error}=await chatSupabaseClient.from('atlasika_playlists').insert({user_id:user.id,name:name.trim().slice(0,80)});
+            if(error){alert('Could not create playlist: '+error.message);return;}await loadMyPlaylists();
+        }
+        async function renameMyPlaylist(id){
+            const p=cachedMyPlaylists.find(x=>Number(x.id)===Number(id));if(!p)return;
+            const name=prompt('New playlist name:',p.name);if(!name||!name.trim())return;
+            const {error}=await chatSupabaseClient.from('atlasika_playlists').update({name:name.trim().slice(0,80)}).eq('id',id);
+            if(error){alert('Could not rename playlist: '+error.message);return;}await loadMyPlaylists();
+        }
+        async function deleteMyPlaylist(id){
+            if(!confirm('Delete this playlist and its saved song list?'))return;
+            const {error}=await chatSupabaseClient.from('atlasika_playlists').delete().eq('id',id);
+            if(error){alert('Could not delete playlist: '+error.message);return;}
+            if(Number(currentPlaylistId)===Number(id)){currentPlaylistId=null;document.getElementById('playlist-songs-view').hidden=true;}
+            await loadMyPlaylists();
+        }
+        async function addSongToMyPlaylist(songId){
+            const user=await requirePermanentAccount();if(!user)return;
+            if(!cachedMyPlaylists.length) await loadMyPlaylists();
+            if(!cachedMyPlaylists.length){if(confirm('You do not have a playlist yet. Create one now?'))await createMyPlaylist();if(!cachedMyPlaylists.length)return;}
+            let chosen=cachedMyPlaylists[0];
+            if(cachedMyPlaylists.length>1){const menu=cachedMyPlaylists.map((p,i)=>`${i+1}. ${p.name}`).join('\n');const answer=prompt('Choose a playlist number:\n'+menu,'1');const n=Number(answer);if(!Number.isInteger(n)||n<1||n>cachedMyPlaylists.length)return;chosen=cachedMyPlaylists[n-1];}
+            const {error}=await chatSupabaseClient.from('atlasika_playlist_songs').insert({playlist_id:chosen.id,song_id:songId});
+            if(error){if(error.code==='23505'){alert('This song is already in that playlist.');return;}alert('Could not add song: '+error.message);return;}
+            alert('Song added to '+chosen.name+'.');
+        }
+        async function openPlaylist(id){
+            const p=cachedMyPlaylists.find(x=>Number(x.id)===Number(id));if(!p)return;
+            const {data,error}=await chatSupabaseClient.from('atlasika_playlist_songs').select('id,song_id,added_at').eq('playlist_id',id).order('added_at',{ascending:true});
+            if(error){alert('Could not open playlist: '+error.message);return;}
+            currentPlaylistId=id;const view=document.getElementById('playlist-songs-view');view.hidden=false;
+            const rows=(data||[]).map(item=>{const song=songsCache.find(x=>String(x.id)===String(item.song_id));return song?`<div class="playlist-song-row"><span>${escapeHtml(song.title)} — ${escapeHtml(song.artist||'AtlasIKA')}</span><button class="share-btn" onclick="removeSongFromPlaylist(${Number(id)},${Number(song.id)})">Remove</button></div>`:''}).join('');
+            view.innerHTML=`<h3>${escapeHtml(p.name)}</h3>${rows||'<p class="playlist-note">This playlist is empty.</p>'}`;
+            document.getElementById('exit-playlist-btn').hidden=false;
+        }
+        async function removeSongFromPlaylist(playlistId,songId){
+            const {error}=await chatSupabaseClient.from('atlasika_playlist_songs').delete().eq('playlist_id',playlistId).eq('song_id',songId);
+            if(error){alert('Could not remove song: '+error.message);return;}await openPlaylist(playlistId);
+        }
+        async function playPlaylist(id){
+            const {data,error}=await chatSupabaseClient.from('atlasika_playlist_songs').select('song_id,added_at').eq('playlist_id',id).order('added_at',{ascending:true});
+            if(error){alert('Could not play playlist: '+error.message);return;}
+            activePlaylistSongIds=(data||[]).map(x=>String(x.song_id)).filter(id=>songsCache.some(s=>String(s.id)===id));
+            if(!activePlaylistSongIds.length){alert('This playlist has no available songs.');activePlaylistSongIds=null;return;}
+            document.getElementById('exit-playlist-btn').hidden=false;renderApp();loadSongToPlayer(0,true);
+        }
+        function exitPlaylistPlayback(){activePlaylistSongIds=null;currentPlaylistId=null;document.getElementById('exit-playlist-btn').hidden=true;document.getElementById('playlist-songs-view').hidden=true;renderApp();}
 
         // REGISTRO DE SERVICE WORKER PARA PWA
         if ('serviceWorker' in navigator) {
