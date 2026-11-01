@@ -899,6 +899,15 @@
                 <option value="World Music">World Music</option>
                     </select>
                 </div>
+                <div class="form-group" id="song-public-playlist-group">
+                    <label for="song-public-playlist">Añadir a playlist pública (opcional)</label>
+                    <select id="song-public-playlist"><option value="">No añadir a ninguna playlist</option></select>
+                    <div class="playlist-quick-create" style="margin-top:8px">
+                        <input id="quick-public-playlist-name" type="text" maxlength="80" placeholder="O crea una nueva playlist">
+                        <button type="button" class="share-btn" onclick="quickCreatePublicPlaylist()">Crear</button>
+                    </div>
+                    <small style="color:var(--text-muted)">La canción se añadirá automáticamente a la playlist seleccionada al guardarla.</small>
+                </div>
                 <div class="form-group">
                     <label data-i18n="shortDescription">Descripción corta</label>
                     <textarea id="song-description-input" maxlength="500" rows="3" placeholder="Describe brevemente esta canción..." data-i18n-placeholder="descriptionPlaceholder" style="width:100%;padding:.8rem;border-radius:10px;border:1px solid var(--border-color);background:#0a0b10;color:#fff;outline:none;font-size:.95rem;resize:vertical;"></textarea>
@@ -917,15 +926,6 @@
                     <small style="color:var(--text-muted);display:block;margin-top:6px;">Use a valid Suno song page URL or a direct MP3 link that plays without signing in.</small>
                     <details class="song-link-help"><summary>How to copy a Suno song link</summary><ol><li>Open Suno in your computer browser.</li><li>Open the song's own page by clicking its title.</li><li>Copy the complete address from the browser address bar.</li><li>Paste it into the Song URL field above.</li></ol><p>Alternative: copy the full page address manually from the browser address bar.</p></details>
                     <details class="song-link-help"><summary>How to add an MP3 link</summary><ol><li>Upload the MP3 file to a cloud storage service.</li><li>Make sure the file is publicly accessible.</li><li>Copy the direct link to the MP3 file.</li><li>Paste it into the Song URL field above.</li></ol><p>The link must open the audio file directly and allow playback without signing in. Do not paste a folder link or a page that requires a login.</p></details>
-                </div>
-                <div class="form-group" id="song-public-playlist-group">
-                    <label for="song-public-playlist">Añadir a playlist pública (opcional)</label>
-                    <select id="song-public-playlist"><option value="">No añadir a ninguna playlist</option></select>
-                    <div class="playlist-quick-create" style="margin-top:8px">
-                        <input id="quick-public-playlist-name" type="text" maxlength="80" placeholder="O crea una nueva playlist">
-                        <button type="button" class="share-btn" onclick="quickCreatePublicPlaylist()">Crear</button>
-                    </div>
-                    <small style="color:var(--text-muted)">La canción se añadirá automáticamente a la playlist seleccionada al guardarla.</small>
                 </div>
                 <button type="submit" class="submit-btn" id="form-submit-btn" data-i18n="saveSong">Guardar Canción</button>
             </form>
@@ -1911,12 +1911,12 @@ async function banChatUser(userId){
                 selectGroup.style.display='none';
                 submitBtn.innerText=t("saveNewSong");
                 resetAdminForm();
-                populatePublicPlaylistSelect();
+                loadPublicPlaylists(true);
             }else{
                 selectGroup.style.display='block';
                 submitBtn.innerText=t("updateSong");
                 populateEditSelect();
-                populatePublicPlaylistSelect();
+                loadPublicPlaylists(true);
             }
         }
 
@@ -1999,9 +1999,12 @@ async function banChatUser(userId){
                 const playlistId=document.getElementById('song-public-playlist').value;
                 if(playlistId){
                     const {error:linkError}=await chatSupabaseClient.from('atlasika_public_playlist_songs').insert({playlist_id:Number(playlistId),song_id:savedSongId});
-                    if(linkError){alert('La canción se guardó, pero no se pudo añadir a la playlist: '+linkError.message);}
+                    if(linkError && linkError.code!=='23505'){
+                        alert('La canción se guardó en el catálogo, pero Supabase rechazó añadirla a la playlist. Código: '+(linkError.code||'sin código')+' · '+linkError.message+'\n\nNo cierres este mensaje sin copiar el error.');
+                        return;
+                    }
                 }
-                alert(t("songAdded"));
+                alert(playlistId?'Canción guardada y añadida a la playlist.':t("songAdded"));
             } else {
                 const editId = parseInt(document.getElementById('edit-song-id').value);
                 if (!editId) { alert(t("selectTrackEdit")); return; }
@@ -2064,7 +2067,7 @@ async function banChatUser(userId){
         function populatePublicPlaylistSelect(){
             const select=document.getElementById('song-public-playlist');if(!select)return;
             const current=select.value;
-            select.innerHTML='<option value="">No añadir a ninguna playlist</option>'+cachedPublicPlaylists.filter(p=>p.is_published).map(p=>`<option value="${Number(p.id)}">${escapeHtml(p.name)}</option>`).join('');
+            select.innerHTML='<option value="">No añadir a ninguna playlist</option>'+cachedPublicPlaylists.map(p=>`<option value="${Number(p.id)}">${escapeHtml(p.name)}${p.is_published?'':' (Borrador)'}</option>`).join('');
             if([...select.options].some(o=>o.value===current))select.value=current;
         }
         async function savePublicPlaylist(event){
