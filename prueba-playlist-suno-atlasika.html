@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prueba independiente — Playlist Suno</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 24px; background: #111318; color: #f4f4f5;
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, sans-serif;
+    }
+    main { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 1.35rem; margin: 0 0 8px; }
+    p { color: #c4c7ce; }
+    .player {
+      width: 100%; min-height: 680px; border: 1px solid #343943;
+      border-radius: 14px; overflow: hidden; background: #191c23;
+    }
+    iframe { display: block; width: 100%; height: 680px; border: 0; }
+    a { color: #9ec5ff; }
+    .note { font-size: .9rem; margin-top: 16px; }
+    @media (max-width: 600px) {
+      body { padding: 14px; }
+      .player, iframe { min-height: 760px; height: 760px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Prueba de playlist oficial de Suno</h1>
+    <p>Esta página es independiente: no modifica AtlasIKA, Supabase ni las canciones.</p>
+    <div class="player">
+      <iframe
+        src="https://suno.com/playlist/b77f8ac2-ac1b-4aec-946a-36b25bc3eede"
+        title="Playlist RockEspanyol de AtlasIKA en Suno"
+        loading="eager"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        referrerpolicy="strict-origin-when-cross-origin">
+      </iframe>
+    </div>
+    <p class="note">
+      Si Suno bloquea la visualización dentro de esta página, abre la playlist directamente:
+      <a href="https://suno.com/playlist/b77f8ac2-ac1b-4aec-946a-36b25bc3eede" target="_blank" rel="noopener noreferrer">RockEspanyol en Suno</a>.
+    </p>
+    <p class="note">Prueba manual: pulsa Play, deja terminar la primera canción y comprueba si comienza automáticamente la segunda. La página no controla ni simula el cambio de pista.</p>
+  </main>
+</body>
+</html>
