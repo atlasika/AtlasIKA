@@ -895,6 +895,7 @@
                 </button>
                 <button type="button" class="admin-tab-btn" id="tab-albums-btn" onclick="setAdminMode('albums')"><i class="fa-solid fa-compact-disc"></i> Álbumes</button>
                 <button type="button" class="admin-tab-btn" id="tab-notifications-btn" onclick="setAdminMode('notifications')"><i class="fa-solid fa-bell"></i> Notificaciones <span class="notification-count" id="admin-notification-count" hidden>0</span></button>
+                <button type="button" class="admin-tab-btn" id="tab-cleanup-btn" onclick="setAdminMode('cleanup')"><i class="fa-solid fa-broom"></i> Vaciar catálogo</button>
             </div>
 
             <div id="admin-playlist-panel" class="admin-playlist-panel">
@@ -925,17 +926,17 @@
                 <div id="admin-albums-list"><p class="atlas-section-note">Cargando…</p></div>
                 <div id="admin-album-song-manager" hidden></div>
             </section>
+            <section id="admin-cleanup-panel" class="admin-playlist-panel">
+                <h3 style="color:#ff6b6b">Reinicio del catálogo</h3>
+                <p class="atlas-section-note">Elimina todas las canciones y sus comentarios y asociaciones con álbumes y playlists. Conserva la aplicación, las cuentas, los álbumes y las playlists vacías.</p>
+                <button type="button" class="submit-btn" style="background:#b42335" onclick="clearAtlasCatalog()">Eliminar todas las canciones</button>
+                <p id="admin-cleanup-status" class="atlas-section-note" aria-live="polite"></p>
+            </section>
             <section id="admin-notifications-panel" class="admin-playlist-panel">
                 <h3 style="color:var(--accent-primary)">Centro de notificaciones</h3>
                 <p class="atlas-section-note">Mensajes nuevos, comentarios vinculados a canciones y propuestas recibidas. Cada aviso identifica al autor y, cuando corresponde, la canción relacionada.</p>
                 <div class="atlas-notification-actions"><button type="button" onclick="loadAtlasNotifications(true)">Actualizar</button><button type="button" onclick="markAllAtlasNotificationsRead()">Marcar todo como leído</button></div>
                 <div id="admin-notifications-list"><p class="atlas-section-note">Cargando notificaciones…</p></div>
-            </section>
-
-            <section id="admin-catalog-cleanup" class="admin-playlist-panel" style="border:1px solid rgba(255,71,87,.45);margin:14px 0;padding:14px;border-radius:12px;">
-                <h3 style="color:#ff6b81">Vaciar catálogo</h3>
-                <p class="atlas-section-note">Elimina en una sola operación todas las canciones del catálogo (Suno y MP3) y sus asociaciones con álbumes y playlists. Conserva los álbumes y las playlists como estructuras vacías. Esta acción es irreversible.</p>
-                <button type="button" class="submit-btn" style="background:#b83245" onclick="clearAtlasSongCatalog()">Eliminar todas las canciones</button>
             </section>
 
             <form id="add-song-form" onsubmit="saveSong(event)">
@@ -2020,7 +2021,7 @@ async function banChatUser(userId){
 
         function setAdminMode(mode) {
             adminMode = mode;
-            ['add','edit','playlists','albums','notifications'].forEach(tab => {
+            ['add','edit','playlists','albums','notifications','cleanup'].forEach(tab => {
                 const button=document.getElementById(`tab-${tab}-btn`);
                 if(button) button.classList.toggle('active', mode===tab);
             });
@@ -2028,15 +2029,19 @@ async function banChatUser(userId){
             const playlistPanel=document.getElementById('admin-playlist-panel');
             const albumsPanel=document.getElementById('admin-albums-panel');
             const notificationsPanel=document.getElementById('admin-notifications-panel');
+            const cleanupPanel=document.getElementById('admin-cleanup-panel');
             const selectGroup=document.getElementById('song-select-group');
             const submitBtn=document.getElementById('form-submit-btn');
             const isPlaylistMode=mode==='playlists';
             const isAlbumMode=mode==='albums';
             const isNotificationMode=mode==='notifications';
-            form.hidden=isPlaylistMode||isAlbumMode||isNotificationMode;
+            const isCleanupMode=mode==='cleanup';
+            form.hidden=isPlaylistMode||isAlbumMode||isNotificationMode||isCleanupMode;
             playlistPanel.classList.toggle('active',isPlaylistMode);
             albumsPanel.classList.toggle('active',isAlbumMode);
             notificationsPanel.classList.toggle('active',isNotificationMode);
+            cleanupPanel.classList.toggle('active',isCleanupMode);
+            if(isCleanupMode){return;}
             if(isPlaylistMode){loadPublicPlaylists(true);return;}
             if(isAlbumMode){loadAtlasAlbums(true);return;}
             if(isNotificationMode){loadAtlasNotifications(true);return;}
@@ -2163,6 +2168,38 @@ async function banChatUser(userId){
             fetchSongsFromCloud();
         }
 
+        async function clearAtlasCatalog(){
+            if(!isChatAdmin||!chatUser){alert('Se requiere una sesión de administrador de AtlasIKA.');return;}
+            const first=confirm('¿Eliminar TODAS las canciones Suno y MP3, sus comentarios y sus asociaciones con álbumes y playlists? Se conservarán las cuentas, la aplicación, los álbumes y las playlists vacías.');
+            if(!first)return;
+            const second=prompt('Para confirmar, escribe BORRAR CATALOGO');
+            if(second!=='BORRAR CATALOGO')return;
+            const status=document.getElementById('admin-cleanup-status');
+            if(status)status.textContent='Eliminando contenido del catálogo…';
+            try{
+                const steps=[
+                    ['song_comments','Comentarios'],
+                    ['atlasika_album_songs','Relaciones de álbumes'],
+                    ['atlasika_public_playlist_songs','Relaciones de playlists']
+                ];
+                for(const [table,label] of steps){
+                    const {error}=await chatSupabaseClient.from(table).delete().not('song_id','is',null);
+                    if(error)throw new Error(label+': '+error.message);
+                }
+                const {error}=await chatSupabaseClient.from('songs').delete().not('id','is',null);
+                if(error)throw new Error('Canciones: '+error.message);
+                songsCache=[];activePlaylistSongIds=null;currentPublicPlaylistId=null;currentPlaylistId=null;
+                const audio=document.getElementById('audio-element');if(audio){audio.pause();audio.removeAttribute('src');audio.load();}
+                currentTrackIndex=0;currentPlayingSongId=null;
+                renderApp();populateEditSelect();await loadAtlasAlbums(true);await loadPublicPlaylists(true);
+                if(status)status.textContent='Catálogo vacío. Se han conservado las estructuras de AtlasIKA.';
+                alert('Catálogo limpiado correctamente.');
+            }catch(error){
+                if(status)status.textContent='No se completó la limpieza: '+error.message;
+                alert('La limpieza se ha detenido: '+error.message+'\nNo se han desactivado las protecciones de seguridad.');
+            }
+        }
+
         async function deleteSong(id) {
             if (!isChatAdmin) { alert(interfaceLanguage==='en'?'Administrator permissions are required.':interfaceLanguage==='tr'?'Yönetici izni gerekiyor.':'Necesitas permisos de administrador.'); return; }
             if (confirm(t("deleteConfirm"))) {
@@ -2170,43 +2207,6 @@ async function banChatUser(userId){
                 if (error) { alert("Error: " + error.message); return; }
             fetchSongsFromCloud();
             }
-        }
-
-        async function clearAtlasSongCatalog() {
-            if (!isChatAdmin || !chatUser) {
-                alert(interfaceLanguage==='en'?'Administrator permissions are required.':interfaceLanguage==='tr'?'Yönetici izni gerekiyor.':'Necesitas permisos de administrador.');
-                return;
-            }
-            const { count, error: countError } = await chatSupabaseClient
-                .from('songs').select('id', { count: 'exact', head: true });
-            if (countError) { alert('No se pudo comprobar el catálogo: ' + countError.message); return; }
-            if (!count) { alert('El catálogo ya está vacío.'); return; }
-            const confirmText = `Vas a eliminar ${count} canciones (Suno y MP3) y sus asociaciones con álbumes y playlists. Los álbumes y las playlists se conservarán vacíos. Esta acción no se puede deshacer. ¿Continuar?`;
-            if (!window.confirm(confirmText)) return;
-            if (!window.confirm('Última confirmación: ¿vaciar ahora todo el catálogo de canciones?')) return;
-
-            // Ejecutar desde la sesión autenticada del administrador para que el trigger
-            // guard_songs_catalog_writes() pueda validar auth.uid().
-            const albumLinks = await chatSupabaseClient.from('atlasika_album_songs').delete().not('song_id', 'is', null);
-            if (albumLinks.error) { alert('No se pudieron limpiar las asociaciones de álbumes. No se ha borrado el catálogo.\n' + albumLinks.error.message); return; }
-            const playlistLinks = await chatSupabaseClient.from('atlasika_public_playlist_songs').delete().not('song_id', 'is', null);
-            if (playlistLinks.error) { alert('No se pudieron limpiar las asociaciones de playlists. No se ha borrado el catálogo.\n' + playlistLinks.error.message); return; }
-            const { error } = await chatSupabaseClient.from('songs').delete().not('id', 'is', null);
-            if (error) {
-                alert('Supabase no permitió vaciar el catálogo. No se ha desactivado ninguna protección. Puede existir otra tabla relacionada con canciones.\n' + error.message);
-                return;
-            }
-            audioElement.pause();
-            audioElement.removeAttribute('src');
-            audioElement.load();
-            currentPlayingSongId = null;
-            currentTrackIndex = 0;
-            activePlaylistSongIds = null;
-            currentPublicPlaylistId = null;
-            await fetchSongsFromCloud();
-            await loadAtlasAlbums(true);
-            await loadPublicPlaylists();
-            alert('Catálogo vacío. Se han conservado los álbumes y las playlists.');
         }
 
         // ÁLBUMES PÚBLICOS Y ADMINISTRACIÓN INTEGRADA
