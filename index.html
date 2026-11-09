@@ -578,6 +578,36 @@
         .playlist-quick-create input{flex:1;min-width:160px}
         @media(max-width:600px){.admin-playlist-form{grid-template-columns:1fr}.admin-playlist-form textarea,.admin-playlist-form button{grid-column:1}}
         [hidden]{display:none!important}
+
+
+        /* AtlasIKA integrated collections and notification center */
+        .atlas-section{width:100%;max-width:1200px;margin:0 auto 22px;padding:18px;background:var(--card-bg);border:1px solid rgba(0,240,255,.22);border-radius:18px;z-index:2}
+        .atlas-section h2{font-size:1.15rem;color:var(--accent-primary);margin-bottom:8px}
+        .atlas-section-note{color:var(--text-muted);font-size:.86rem;line-height:1.5}
+        .atlas-collection-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:14px}
+        .atlas-collection-card{border:1px solid var(--border-color);border-radius:13px;padding:12px;background:rgba(0,0,0,.2);min-width:0}
+        .atlas-collection-card img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:9px;margin-bottom:9px;background:#111}
+        .atlas-collection-card h3{font-size:1rem;margin-bottom:5px;overflow-wrap:anywhere}
+        .atlas-collection-card p{font-size:.8rem;color:var(--text-muted);line-height:1.4;margin-bottom:8px}
+        .atlas-admin-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+        .atlas-admin-form input,.atlas-admin-form textarea,.atlas-admin-form select{width:100%;min-width:0;padding:10px;border:1px solid var(--border-color);border-radius:9px;background:#0a0b10;color:#fff;font:inherit}
+        .atlas-admin-form textarea,.atlas-admin-form .full,.atlas-admin-form button{grid-column:1/-1}
+        .atlas-admin-form textarea{min-height:64px}
+        .atlas-admin-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px;border:1px solid var(--border-color);border-radius:10px;margin:8px 0}
+        .atlas-admin-actions{display:flex;gap:6px;flex-wrap:wrap}
+        .atlas-admin-actions button{padding:6px 10px;border:1px solid var(--border-color);border-radius:8px;background:rgba(255,255,255,.06);color:#fff;cursor:pointer}
+        .atlas-notification{padding:12px;border:1px solid var(--border-color);border-radius:11px;margin:9px 0;background:rgba(0,0,0,.18)}
+        .atlas-notification.unread{border-color:var(--accent-primary);background:rgba(0,240,255,.07)}
+        .atlas-notification-head{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.78rem;color:var(--text-muted);margin-bottom:6px}
+        .atlas-notification p{font-size:.9rem;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+        .atlas-notification-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+        .atlas-notification-actions button{padding:6px 10px;border:1px solid var(--border-color);border-radius:8px;background:rgba(255,255,255,.06);color:#fff;cursor:pointer}
+        .notification-bell{position:relative}
+        .notification-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:20px;background:var(--accent-secondary);color:#fff;font-size:.68rem;font-weight:900;margin-left:4px}
+        .notification-user-panel{width:100%;max-width:900px;margin:-.4rem auto 1.2rem;padding:14px;background:var(--card-bg);border:1px solid var(--accent-primary);border-radius:14px;z-index:3}
+        .notification-user-panel[hidden]{display:none!important}
+        @media(max-width:600px){.atlas-admin-form{grid-template-columns:1fr}.atlas-admin-form textarea,.atlas-admin-form .full,.atlas-admin-form button{grid-column:1}.admin-mode-selector{flex-wrap:wrap}.admin-tab-btn{flex:1 1 42%}}
+
     </style>
 </head>
 <body>
@@ -603,11 +633,14 @@
                 <i class="fa-solid fa-circle-info"></i> <span data-i18n="aboutButton">Sobre AtlasIKA</span>
             </button>
             <button class="contact-btn" id="account-open-btn" type="button" onclick="openAccountModal()"><i class="fa-solid fa-user"></i> <span id="account-button-label">Account</span></button>
+            <button class="contact-btn notification-bell" id="user-notifications-btn" type="button" onclick="toggleUserNotifications()" hidden><i class="fa-solid fa-bell"></i> <span>Notifications</span><span class="notification-count" id="user-notification-count" hidden>0</span></button>
             <a href="mailto:ikamusicstudios@gmail.com" class="contact-btn">
                 <i class="fa-solid fa-envelope"></i> <span data-i18n="contact">Contacto</span>
             </a>
         </div>
     </header>
+
+    <section id="user-notifications-panel" class="notification-user-panel" hidden aria-live="polite"><div class="playlist-panel-heading"><h2><i class="fa-solid fa-bell"></i> Your notifications</h2><button type="button" class="share-btn" onclick="toggleUserNotifications(false)">Close</button></div><div id="user-notifications-list"><p class="atlas-section-note">No notifications.</p></div></section>
 
     <!-- SECCIÓN INTERACTIVA DE IDIOMA / ESTILO -->
     <div class="interactive-mood-box">
@@ -721,6 +754,14 @@
             <button class="control-btn" id="shuffle-btn" onclick="toggleShuffle()"><i class="fa-solid fa-shuffle"></i> <span data-i18n="random">Aleatorio</span>: OFF</button>
         </div>
     </div>
+
+    <!-- ÁLBUMES PÚBLICOS -->
+    <section class="atlas-section" id="public-albums-section">
+        <h2><i class="fa-solid fa-compact-disc"></i> Álbumes</h2>
+        <p class="atlas-section-note">Colecciones de canciones agrupadas por álbum. Escucha un álbum completo o descubre sus temas.</p>
+        <div class="atlas-collection-grid" id="public-albums-grid"><p class="atlas-section-note">Cargando álbumes…</p></div>
+        <button type="button" id="exit-atlas-album-btn" class="share-btn" onclick="exitAtlasAlbumPlayback()" hidden>Volver a todas las canciones</button>
+    </section>
 
     <!-- PLAYLISTS PRIVADAS: solo visibles para la cuenta autenticada -->
     <section id="my-playlists-panel" class="my-playlists-panel" hidden>
@@ -852,6 +893,8 @@
                 <button type="button" class="admin-tab-btn" id="tab-playlists-btn" onclick="setAdminMode('playlists')">
                     <i class="fa-solid fa-list"></i> Playlists
                 </button>
+                <button type="button" class="admin-tab-btn" id="tab-albums-btn" onclick="setAdminMode('albums')"><i class="fa-solid fa-compact-disc"></i> Álbumes</button>
+                <button type="button" class="admin-tab-btn" id="tab-notifications-btn" onclick="setAdminMode('notifications')"><i class="fa-solid fa-bell"></i> Notificaciones <span class="notification-count" id="admin-notification-count" hidden>0</span></button>
             </div>
 
             <div id="admin-playlist-panel" class="admin-playlist-panel">
@@ -865,6 +908,29 @@
                 <h3 style="color:var(--accent-primary);margin:18px 0 8px">Playlists públicas existentes</h3>
                 <div id="admin-public-playlists-list"><p class="playlist-note">Cargando…</p></div>
             </div>
+
+            <section id="admin-albums-panel" class="admin-playlist-panel">
+                <h3 style="color:var(--accent-primary)">Crear álbum</h3>
+                <form id="admin-album-form" class="atlas-admin-form" onsubmit="saveAtlasAlbum(event)">
+                    <input id="atlas-album-title" maxlength="120" required placeholder="Nombre del álbum">
+                    <input id="atlas-album-artist" maxlength="120" placeholder="Artista / intérprete">
+                    <input id="atlas-album-cover" type="url" placeholder="Enlace de portada (opcional)">
+                    <input id="atlas-album-language" maxlength="60" placeholder="Idioma">
+                    <input id="atlas-album-genre" maxlength="80" placeholder="Género musical">
+                    <textarea id="atlas-album-description" maxlength="500" placeholder="Descripción del álbum"></textarea>
+                    <label class="full" style="color:var(--text-muted);display:flex;gap:8px;align-items:center"><input id="atlas-album-published" type="checkbox" checked> Publicar álbum para todos</label>
+                    <button type="submit" class="submit-btn">Guardar álbum</button>
+                </form>
+                <h3 style="color:var(--accent-primary);margin:18px 0 8px">Álbumes existentes</h3>
+                <div id="admin-albums-list"><p class="atlas-section-note">Cargando…</p></div>
+                <div id="admin-album-song-manager" hidden></div>
+            </section>
+            <section id="admin-notifications-panel" class="admin-playlist-panel">
+                <h3 style="color:var(--accent-primary)">Centro de notificaciones</h3>
+                <p class="atlas-section-note">Mensajes nuevos, comentarios vinculados a canciones y propuestas recibidas. Cada aviso identifica al autor y, cuando corresponde, la canción relacionada.</p>
+                <div class="atlas-notification-actions"><button type="button" onclick="loadAtlasNotifications(true)">Actualizar</button><button type="button" onclick="markAllAtlasNotificationsRead()">Marcar todo como leído</button></div>
+                <div id="admin-notifications-list"><p class="atlas-section-note">Cargando notificaciones…</p></div>
+            </section>
 
             <form id="add-song-form" onsubmit="saveSong(event)">
                 <input type="hidden" id="edit-song-id" value="">
@@ -983,6 +1049,9 @@
         let accountAuthMode = 'login';
         let activePlaylistSongIds = null;
         let cachedMyPlaylists = [];
+        let cachedAtlasAlbums = [];
+        let atlasNotificationChannel = null;
+        let atlasUserNotificationsOpen = false;
         let currentPlaylistId = null;
         let cachedPublicPlaylists = [];
         let currentPublicPlaylistId = null;
@@ -1704,11 +1773,15 @@
                 const adminCheck=await chatSupabaseClient.rpc('is_chat_admin');
                 isChatAdmin=!adminCheck.error && adminCheck.data===true;
                 await loadChatMessages();
+                await loadAtlasAlbums();
+                await loadAtlasNotifications();
                 await loadMyCollaboratorSubmissions();
                 if(isChatAdmin) await loadCollaboratorReviewQueue();
                 chatChannel=chatSupabaseClient.channel('atlasika-live-chat',{config:{presence:{key:chatUser.id}}})
                     .on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},()=>loadChatMessages())
                     .on('postgres_changes',{event:'*',schema:'public',table:'collaborator_submissions'},()=>{loadMyCollaboratorSubmissions();if(isChatAdmin)loadCollaboratorReviewQueue();})
+                    .on('postgres_changes',{event:'INSERT',schema:'public',table:'atlasika_notifications',filter:`recipient_user_id=eq.${chatUser.id}`},()=>{loadAtlasNotifications();if(atlasUserNotificationsOpen)loadUserAtlasNotifications();})
+                    .on('postgres_changes',{event:'*',schema:'public',table:'atlasika_albums'},()=>loadAtlasAlbums())
                     .on('presence',{event:'sync'},()=>{chatOnlineCount=Object.keys(chatChannel.presenceState()).length;applyChatLanguage();})
                     .subscribe(async status=>{
                         if(status==='SUBSCRIBED'){
@@ -1935,22 +2008,32 @@ async function banChatUser(userId){
             renderApp();
             renderPublicPlaylists();
             renderAdminPublicPlaylists();
+            loadAtlasAlbums(true);
+            loadAtlasNotifications(true);
         }
 
         function setAdminMode(mode) {
             adminMode = mode;
-            ['add','edit','playlists'].forEach(tab => {
+            ['add','edit','playlists','albums','notifications'].forEach(tab => {
                 const button=document.getElementById(`tab-${tab}-btn`);
                 if(button) button.classList.toggle('active', mode===tab);
             });
             const form=document.getElementById('add-song-form');
             const playlistPanel=document.getElementById('admin-playlist-panel');
+            const albumsPanel=document.getElementById('admin-albums-panel');
+            const notificationsPanel=document.getElementById('admin-notifications-panel');
             const selectGroup=document.getElementById('song-select-group');
             const submitBtn=document.getElementById('form-submit-btn');
             const isPlaylistMode=mode==='playlists';
-            form.hidden=isPlaylistMode;
+            const isAlbumMode=mode==='albums';
+            const isNotificationMode=mode==='notifications';
+            form.hidden=isPlaylistMode||isAlbumMode||isNotificationMode;
             playlistPanel.classList.toggle('active',isPlaylistMode);
+            albumsPanel.classList.toggle('active',isAlbumMode);
+            notificationsPanel.classList.toggle('active',isNotificationMode);
             if(isPlaylistMode){loadPublicPlaylists(true);return;}
+            if(isAlbumMode){loadAtlasAlbums(true);return;}
+            if(isNotificationMode){loadAtlasNotifications(true);return;}
             if(mode==='add'){
                 selectGroup.style.display='none';
                 submitBtn.innerText=t("saveNewSong");
@@ -2082,6 +2165,64 @@ async function banChatUser(userId){
             fetchSongsFromCloud();
             }
         }
+
+        // ÁLBUMES PÚBLICOS Y ADMINISTRACIÓN INTEGRADA
+        async function loadAtlasAlbums(adminRefresh=false){
+            const {data,error}=await chatSupabaseClient.from('atlasika_albums').select('id,title,artist,cover_url,language,genre,description,is_published,created_at').order('created_at',{ascending:false});
+            if(error){console.warn('Albums:',error.message);const grid=document.getElementById('public-albums-grid');if(grid)grid.innerHTML='<p class="atlas-section-note">Los álbumes estarán disponibles después de ejecutar el SQL de configuración de AtlasIKA.</p>';return;}
+            cachedAtlasAlbums=data||[];
+            renderPublicAtlasAlbums();
+            if(adminRefresh||isChatAdmin)renderAdminAtlasAlbums();
+        }
+        function renderPublicAtlasAlbums(){
+            const root=document.getElementById('public-albums-grid');if(!root)return;
+            const items=cachedAtlasAlbums.filter(a=>a.is_published||isChatAdmin);
+            if(!items.length){root.innerHTML='<p class="atlas-section-note">Todavía no hay álbumes publicados.</p>';return;}
+            root.innerHTML=items.map(a=>`<article class="atlas-collection-card">${a.cover_url?`<img src="${escapeHtml(a.cover_url)}" alt="${escapeHtml(a.title)}" loading="lazy">`:''}<h3>${escapeHtml(a.title)}</h3><p>${escapeHtml([a.artist,a.genre,a.language].filter(Boolean).join(' · '))}</p><p>${escapeHtml(a.description||'')}</p><button class="load-to-player-btn" onclick="playAtlasAlbum(${Number(a.id)})">▶ Escuchar álbum</button></article>`).join('');
+        }
+        function renderAdminAtlasAlbums(){
+            const root=document.getElementById('admin-albums-list');if(!root)return;
+            if(!isChatAdmin){root.innerHTML='<p class="atlas-section-note">Solo el administrador puede gestionar álbumes.</p>';return;}
+            if(!cachedAtlasAlbums.length){root.innerHTML='<p class="atlas-section-note">Todavía no has creado álbumes.</p>';return;}
+            root.innerHTML=cachedAtlasAlbums.map(a=>`<div class="atlas-admin-row"><div><strong>${escapeHtml(a.title)}</strong><div class="atlas-section-note">${a.is_published?'Publicado':'Borrador'}${a.artist?' · '+escapeHtml(a.artist):''}</div></div><div class="atlas-admin-actions"><button onclick="manageAtlasAlbumSongs(${Number(a.id)})">Canciones / orden</button><button onclick="editAtlasAlbum(${Number(a.id)})">Editar</button><button onclick="toggleAtlasAlbumPublish(${Number(a.id)},${!a.is_published})">${a.is_published?'Ocultar':'Publicar'}</button><button onclick="deleteAtlasAlbum(${Number(a.id)})">Eliminar</button></div></div>`).join('');
+        }
+        async function saveAtlasAlbum(event){
+            event.preventDefault();if(!isChatAdmin)return;
+            const payload={title:document.getElementById('atlas-album-title').value.trim(),artist:document.getElementById('atlas-album-artist').value.trim()||null,cover_url:document.getElementById('atlas-album-cover').value.trim()||null,language:document.getElementById('atlas-album-language').value.trim()||null,genre:document.getElementById('atlas-album-genre').value.trim()||null,description:document.getElementById('atlas-album-description').value.trim()||null,is_published:document.getElementById('atlas-album-published').checked};
+            const editId=document.getElementById('admin-album-form').dataset.editId;
+            const query=editId?chatSupabaseClient.from('atlasika_albums').update(payload).eq('id',editId):chatSupabaseClient.from('atlasika_albums').insert(payload);
+            const {error}=await query;if(error){alert('No se pudo guardar el álbum: '+error.message);return;}
+            document.getElementById('admin-album-form').reset();delete document.getElementById('admin-album-form').dataset.editId;document.querySelector('#admin-album-form button[type="submit"]').textContent='Guardar álbum';
+            await loadAtlasAlbums(true);alert('Álbum guardado.');
+        }
+        function editAtlasAlbum(id){
+            const a=cachedAtlasAlbums.find(x=>Number(x.id)===Number(id));if(!a)return;
+            document.getElementById('atlas-album-title').value=a.title||'';document.getElementById('atlas-album-artist').value=a.artist||'';document.getElementById('atlas-album-cover').value=a.cover_url||'';document.getElementById('atlas-album-language').value=a.language||'';document.getElementById('atlas-album-genre').value=a.genre||'';document.getElementById('atlas-album-description').value=a.description||'';document.getElementById('atlas-album-published').checked=!!a.is_published;
+            document.getElementById('admin-album-form').dataset.editId=String(id);document.querySelector('#admin-album-form button[type="submit"]').textContent='Actualizar álbum';document.getElementById('atlas-album-form').scrollIntoView({behavior:'smooth',block:'center'});
+        }
+        async function toggleAtlasAlbumPublish(id,published){const {error}=await chatSupabaseClient.from('atlasika_albums').update({is_published:published}).eq('id',id);if(error){alert('No se pudo actualizar: '+error.message);return;}await loadAtlasAlbums(true);}
+        async function deleteAtlasAlbum(id){if(!isChatAdmin||!confirm('¿Eliminar este álbum? Las canciones del catálogo no se borrarán.'))return;const {error}=await chatSupabaseClient.from('atlasika_albums').delete().eq('id',id);if(error){alert('No se pudo eliminar: '+error.message);return;}await loadAtlasAlbums(true);}
+        async function manageAtlasAlbumSongs(id){
+            if(!isChatAdmin)return;const a=cachedAtlasAlbums.find(x=>Number(x.id)===Number(id));if(!a)return;
+            const {data,error}=await chatSupabaseClient.from('atlasika_album_songs').select('id,song_id,position').eq('album_id',id).order('position',{ascending:true});if(error){alert('No se pudieron cargar las canciones: '+error.message);return;}
+            const rows=(data||[]).map((x,i)=>{const song=songsCache.find(y=>String(y.id)===String(x.song_id));return song?`<div class="atlas-admin-row"><span>${i+1}. ${escapeHtml(song.title)}</span><div class="atlas-admin-actions"><button onclick="moveAtlasAlbumSong(${Number(id)},${Number(x.id)},-1)">↑</button><button onclick="moveAtlasAlbumSong(${Number(id)},${Number(x.id)},1)">↓</button><button onclick="removeAtlasAlbumSong(${Number(id)},${Number(song.id)})">Quitar</button></div></div>`:''}).join('');
+            const options=songsCache.map(song=>`<option value="${Number(song.id)}">${escapeHtml(song.title)}</option>`).join('');
+            const box=document.getElementById('admin-album-song-manager');box.hidden=false;box.innerHTML=`<h3 style="color:var(--accent-primary);margin:14px 0 8px">${escapeHtml(a.title)} — canciones y orden</h3><form class="playlist-quick-create" onsubmit="addSongToAtlasAlbum(event,${Number(id)})"><select id="atlas-album-song-select" class="interactive-select" required><option value="">Selecciona una canción</option>${options}</select><button class="share-btn" type="submit">Añadir canción</button></form>${rows||'<p class="atlas-section-note">Este álbum todavía no tiene canciones.</p>'}`;box.scrollIntoView({behavior:'smooth',block:'nearest'});
+        }
+        async function addSongToAtlasAlbum(event,albumId){event.preventDefault();if(!isChatAdmin)return;const songId=Number(document.getElementById('atlas-album-song-select').value);if(!songId)return;const {data}=await chatSupabaseClient.from('atlasika_album_songs').select('position').eq('album_id',albumId).order('position',{ascending:false}).limit(1);const position=(data?.[0]?.position??-1)+1;const {error}=await chatSupabaseClient.from('atlasika_album_songs').insert({album_id:albumId,song_id:songId,position});if(error){alert('No se pudo añadir: '+error.message);return;}await manageAtlasAlbumSongs(albumId);}
+        async function removeAtlasAlbumSong(albumId,songId){const {error}=await chatSupabaseClient.from('atlasika_album_songs').delete().eq('album_id',albumId).eq('song_id',songId);if(error){alert('No se pudo quitar: '+error.message);return;}await manageAtlasAlbumSongs(albumId);}
+        async function moveAtlasAlbumSong(albumId,rowId,delta){const {data,error}=await chatSupabaseClient.from('atlasika_album_songs').select('id,song_id,position').eq('album_id',albumId).order('position',{ascending:true});if(error||!data)return;const i=data.findIndex(x=>Number(x.id)===Number(rowId)),j=i+delta;if(i<0||j<0||j>=data.length)return;const a=data[i],b=data[j];const {error:e1}=await chatSupabaseClient.from('atlasika_album_songs').update({position:b.position}).eq('id',a.id);const {error:e2}=await chatSupabaseClient.from('atlasika_album_songs').update({position:a.position}).eq('id',b.id);if(e1||e2){alert('No se pudo cambiar el orden.');return;}await manageAtlasAlbumSongs(albumId);}
+        async function playAtlasAlbum(id){const {data,error}=await chatSupabaseClient.from('atlasika_album_songs').select('song_id,position').eq('album_id',id).order('position',{ascending:true});if(error){alert('No se pudo abrir el álbum: '+error.message);return;}activePlaylistSongIds=(data||[]).map(x=>String(x.song_id)).filter(id=>songsCache.some(s=>String(s.id)===id));if(!activePlaylistSongIds.length){alert('Este álbum todavía no contiene canciones.');activePlaylistSongIds=null;return;}document.getElementById('exit-atlas-album-btn').hidden=false;renderApp();loadSongToPlayer(0,true);document.getElementById('main-player-box').scrollIntoView({behavior:'smooth',block:'center'});}
+        function exitAtlasAlbumPlayback(){activePlaylistSongIds=null;document.getElementById('exit-atlas-album-btn').hidden=true;renderApp();}
+
+        // NOTIFICACIONES: lectura propia para cada usuario y administración validada por RLS.
+        async function loadAtlasNotifications(force=false){if(!chatUser||!isChatAdmin)return;const {data,error}=await chatSupabaseClient.from('atlasika_notifications').select('id,recipient_user_id,event_type,actor_name,body,song_id,song_title,related_id,is_read,created_at').eq('recipient_user_id',chatUser.id).eq('is_admin',true).order('created_at',{ascending:false}).limit(100);if(error){console.warn('Admin notifications:',error.message);const root=document.getElementById('admin-notifications-list');if(root)root.innerHTML='<p class="atlas-section-note">Ejecuta el SQL de notificaciones para activar este centro.</p>';return;}renderAtlasNotificationList('admin-notifications-list',data||[],true);const unread=(data||[]).filter(n=>!n.is_read).length;const badge=document.getElementById('admin-notification-count');if(badge){badge.hidden=!unread;badge.textContent=unread>99?'99+':String(unread);}}
+        async function loadUserAtlasNotifications(){if(!chatUser)return;const {data,error}=await chatSupabaseClient.from('atlasika_notifications').select('id,event_type,actor_name,body,song_id,song_title,related_id,is_read,created_at').eq('recipient_user_id',chatUser.id).eq('is_admin',false).order('created_at',{ascending:false}).limit(50);if(error){console.warn('User notifications:',error.message);return;}renderAtlasNotificationList('user-notifications-list',data||[],false);const unread=(data||[]).filter(n=>!n.is_read).length;const badge=document.getElementById('user-notification-count');if(badge){badge.hidden=!unread;badge.textContent=unread>99?'99+':String(unread);}}
+        function renderAtlasNotificationList(rootId,items,isAdminView){const root=document.getElementById(rootId);if(!root)return;if(!items.length){root.innerHTML='<p class="atlas-section-note">No hay notificaciones nuevas.</p>';return;}root.innerHTML=items.map(n=>`<article class="atlas-notification ${n.is_read?'':'unread'}"><div class="atlas-notification-head"><strong>${escapeHtml(n.actor_name||'AtlasIKA')} · ${escapeHtml(n.event_type||'Actividad')}</strong><span>${new Date(n.created_at).toLocaleString()}</span></div><p>${escapeHtml(n.body||'')}</p>${n.song_title?`<p class="atlas-section-note">Canción: ${escapeHtml(n.song_title)}</p>`:''}<div class="atlas-notification-actions">${n.song_id?`<button onclick="openSongFromNotification(${Number(n.song_id)})">Ver canción</button>`:''}${!n.is_read?`<button onclick="markAtlasNotificationRead(${Number(n.id)},${isAdminView})">Marcar como leído</button>`:''}</div></article>`).join('');}
+        function openSongFromNotification(songId){const song=songsCache.find(x=>String(x.id)===String(songId));if(!song)return;playSongById(songId);document.getElementById('songs-container').scrollIntoView({behavior:'smooth',block:'center'});}
+        async function markAtlasNotificationRead(id,isAdminView){const {error}=await chatSupabaseClient.from('atlasika_notifications').update({is_read:true}).eq('id',id);if(error){alert('No se pudo actualizar: '+error.message);return;}if(isAdminView)await loadAtlasNotifications();else await loadUserAtlasNotifications();}
+        async function markAllAtlasNotificationsRead(){if(!chatUser||!isChatAdmin)return;const {error}=await chatSupabaseClient.from('atlasika_notifications').update({is_read:true}).eq('recipient_user_id',chatUser.id).eq('is_admin',true).eq('is_read',false);if(error){alert('No se pudieron marcar: '+error.message);return;}await loadAtlasNotifications();}
+        function toggleUserNotifications(force){const panel=document.getElementById('user-notifications-panel');if(!panel)return;atlasUserNotificationsOpen=typeof force==='boolean'?force:!atlasUserNotificationsOpen;panel.hidden=!atlasUserNotificationsOpen;if(atlasUserNotificationsOpen)loadUserAtlasNotifications();}
 
         // PLAYLISTS PÚBLICAS: lectura para visitantes; escritura validada por RLS y is_chat_admin().
         async function loadPublicPlaylists(forAdmin=false){
@@ -2232,6 +2373,8 @@ async function banChatUser(userId){
                 document.getElementById('account-button-label').textContent=permanent?(user.email||'My account'):'Account';
                 document.getElementById('account-signout-btn').hidden=!permanent;
                 document.getElementById('my-playlists-panel').hidden=!permanent;
+                const notifButton=document.getElementById('user-notifications-btn');if(notifButton)notifButton.hidden=!user;
+                if(user) await loadUserAtlasNotifications();
                 if(permanent) await loadMyPlaylists(); else {cachedMyPlaylists=[];document.getElementById('my-playlists-list').innerHTML='';}
             }catch(e){console.warn('Account UI:',e);}
         }
